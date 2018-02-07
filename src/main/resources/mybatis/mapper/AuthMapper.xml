@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.$51zhiyuan.development.kidbridge.dao.auth">
+
+    <update id="delete" parameterType="java.util.ArrayList">
+        UPDATE `t_authc`
+        SET
+            `del_flag`= '1'
+        WHERE
+            `id` IN <foreach collection="list" open="(" separator="," close=")" item="item">#{item}</foreach>
+    </update>
+    
+    <select id="ids" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        SELECT
+            `auhtc`.`id`
+        FROM
+            `t_authc` AS `auhtc`
+        WHERE
+            `auhtc`.`del_flag` = FALSE
+            AND `auhtc`.`user_id` = #{_parameter}
+    </select>
+
+</mapper>

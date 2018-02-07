@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.$51zhiyuan.development.kidbridge.dao.user">
+
+    <select id="list" resultType="User">
+        SELECT
+            `user`.`id`,
+            `user`.`phone`,
+            `user`.`head`,
+            `user`.`nickname`,
+            `user`.`birthday`,
+            `user`.`bonus`,
+            `user`.`balance`,
+            `user`.`receiving_contact` AS `receivingContact`,
+            `user`.`receiving_phone` AS `receivingPhone`,
+            `user`.`receiving_region` AS `receivingRegion`,
+            `user`.`receiving_street` AS `receivingStreet`,
+            `user`.`create_time`
+        FROM
+            `t_user` AS `user`
+        WHERE
+            `user`.`del_flag` = FALSE
+            <if test="keyword != null and keyword != ''">
+                AND (`user`.`id` LIKE CONCAT('%',#{keyword},'%') OR `user`.`phone` LIKE CONCAT('%',#{keyword},'%') OR `user`.`nickname` LIKE CONCAT('%',#{keyword},'%'))
+            </if>
+        ORDER BY
+            `user`.`create_time` DESC
+    </select>
+
+    <select id="search" parameterType="java.lang.String" resultType="User">
+        SELECT
+            `user`.`id`,
+            `user`.`phone`,
+            `user`.`nickname`,
+            `user`.`create_time`
+        FROM
+            `t_user` AS `user`
+        WHERE
+            `user`.`del_flag` = FALSE
+            AND (`user`.`id` LIKE CONCAT('%',#{_parameter},'%') OR `user`.`nickname` LIKE CONCAT('%',#{_parameter},'%') OR `user`.`phone` LIKE CONCAT('%',#{_parameter},'%'))
+    </select>
+
+    <update id="updateBonus" parameterType="java.util.HashMap">
+        UPDATE `t_user`
+            SET `bonus` = (bonus + #{append})
+        WHERE
+            `id` = #{id}
+    </update>
+
+    <update id="updateBalance" parameterType="java.util.HashMap">
+        UPDATE `t_user`
+            SET `balance` = (balance + #{append} )
+        WHERE
+            `id` = #{id}
+    </update>
+
+    <select id="count" resultType="java.lang.Integer">
+        SELECT
+        COUNT(*)
+        FROM
+        `t_user` AS `user`
+        WHERE
+        `user`.`del_flag` = FALSE
+    </select>
+
+    <update id="delete" parameterType="java.lang.Integer">
+        UPDATE `t_user`
+            SET `del_flag` = TRUE
+        WHERE
+            `id` = #{_parameter}
+    </update>
+
+    <!--<select id="search" parameterType="java.lang.String" resultType="Book">
+        SELECT
+        `book`.`id`,
+        `book`.`name`
+        FROM
+        `t_book` AS `book`
+        WHERE
+        `book`.`del_flag` = FALSE
+        AND (`book`.`id` LIKE CONCAT('%',#{_parameter},'%') OR `book`.`name` LIKE CONCAT('%',#{_parameter},'%') OR `book`.`tag` LIKE CONCAT('%',#{_parameter},'%'))
+    </select>-->
+
+</mapper>

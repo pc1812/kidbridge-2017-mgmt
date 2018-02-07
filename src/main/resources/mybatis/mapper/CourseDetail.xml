@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.$51zhiyuan.development.kidbridge.dao.courseDetail">
+
+    <insert id="add" parameterType="java.util.HashMap">
+        INSERT INTO `t_course_detail`(
+            `course_id`,
+            `book_id`
+        )VALUES
+        <foreach collection="bookList" item="item" separator=",">
+            (
+            #{courseId},
+            #{item}
+            )
+        </foreach>
+    </insert>
+
+    <update id="del" parameterType="java.util.HashMap">
+        UPDATE `t_course_detail`
+        SET
+            `del_flag` = TRUE
+        WHERE
+            `course_id` = #{_parameter}
+    </update>
+
+</mapper>

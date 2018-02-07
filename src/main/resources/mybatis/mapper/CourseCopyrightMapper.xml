@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.$51zhiyuan.development.kidbridge.dao.courseCopyright">
+
+    <resultMap id="simpleResultMap" type="CourseCopyright">
+        <id property="id" column="id" />
+        <result property="delFlag" column="del_flag" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <association property="course" javaType="Course">
+            <id property="id" column="course_id" />
+        </association>
+        <association property="user" javaType="User">
+            <id property="id" column="user_id" />
+        </association>
+    </resultMap>
+
+    <insert id="add" parameterType="java.util.HashMap">
+        INSERT INTO `t_course_copyright`(
+            `course_id`,
+            `user_id`
+        )VALUES(
+            #{courseId},
+            #{userId}
+        )
+    </insert>
+
+    <select id="get" parameterType="java.util.HashMap" resultMap="simpleResultMap">
+        SELECT
+            `courseCopyright`.`id`,
+            `courseCopyright`.`course_id`,
+            `courseCopyright`.`user_id`,
+            `courseCopyright`.`del_flag`,
+            `courseCopyright`.`create_time`,
+            `courseCopyright`.`update_time`
+        FROM
+            `t_course_copyright` AS `courseCopyright`
+        WHERE
+            `courseCopyright`.`del_flag` = FALSE AND
+            `courseCopyright`.`course_id` = #{courseId}
+    </select>
+
+    <update id="edit" parameterType="java.util.HashMap">
+        UPDATE `t_course_copyright`
+        SET
+            `user_id` = #{userId}
+        WHERE
+            `id` = #{id}
+    </update>
+
+</mapper>

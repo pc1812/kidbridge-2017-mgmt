@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.$51zhiyuan.development.kidbridge.dao.book">
+
+    <resultMap id="getResultMap" type="Book">
+        <id property="id" column="book_id" />
+        <result property="name" column="book_name" />
+        <result property="icon" column="book_icon" typeHandler="net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler" />
+        <result property="price" column="book_price" />
+        <result property="fit" column="book_fit" />
+        <result property="outline" column="book_outline" />
+        <result property="feeling" column="book_feeling" />
+        <result property="tag" column="book_tag" typeHandler="net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler" />
+        <result property="richText" column="book_rich_text" />
+        <result property="sort" column="book_sort" />
+        <result property="repeatActiveTime" column="book_repeat_active_time" />
+        <result property="active" column="book_active" />
+        <association property="copyright" javaType="BookCopyright">
+            <association property="user" javaType="User">
+                <id property="id" column="bookCopyright_user_id" />
+            </association>
+        </association>
+    </resultMap>
+
+    <select id="existBookInCourse" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            `t_course_detail` AS `courseDetail`
+        WHERE
+            `courseDetail`.`del_flag` = FALSE
+            AND `courseDetail`.`book_id` = #{_parameter}
+    </select>
+
+    <select id="get" resultMap="getResultMap">
+        SELECT
+            `book`.`id` AS `book_id`,
+            `book`.`name` AS `book_name`,
+            `book`.`icon` AS `book_icon`,
+            `book`.`price` AS `book_price`,
+            `book`.`fit` AS `book_fit`,
+            `book`.`outline` AS `book_outline`,
+            `book`.`feeling` AS `book_feeling`,
+            `book`.`tag` AS `book_tag`,
+            `book`.`rich_text` AS `book_rich_text`,
+            `book`.`repeat_active_time` AS `book_repeat_active_time`,
+            `book`.`active` AS `book_active`,
+            `book`.`sort` AS `book_sort`,
+            IFNULL(bookCopyright.user_id,-1) AS `bookCopyright_user_id`
+        FROM
+            `t_book` AS `book`
+		LEFT JOIN
+		    (SELECT * FROM `t_book_copyright` AS `bookCopyright` WHERE `bookCopyright`.`del_flag` = FALSE) AS `bookCopyright` ON `bookCopyright`.`book_id` = `book`.`id`
+        WHERE
+            `book`.`del_flag` = FALSE
+            AND `book`.`id` = #{id}
+        ORDER BY
+            `book`.`create_time` DESC
+    </select>
+
+    <resultMap id="simpleResultMap" type="Book">
+        <result property="icon" column="icon" typeHandler="net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler" />
+        <result property="tag" column="tag" typeHandler="net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler" />
+    </resultMap>
+
+    <select id="list" resultMap="simpleResultMap">
+        SELECT
+            `book`.`id`,
+            `book`.`name`,
+            `book`.`icon`,
+            `book`.`price`,
+            `book`.`fit`,
+            `book`.`tag`
+        FROM
+            `t_book` AS `book`
+        WHERE
+            `book`.`del_flag` = FALSE
+            <if test="active != null">
+                AND `book`.`active` = #{active}
+            </if>
+            <if test="fit != null and fit != ''">
+                AND `book`.`fit` = #{fit}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (`book`.`id` LIKE CONCAT('%',#{keyword},'%') OR `book`.`name` LIKE CONCAT('%',#{keyword},'%') OR `book`.`tag` LIKE CONCAT('%',#{keyword},'%'))
+            </if>
+        ORDER BY
+            `book`.`sort` DESC,
+            `book`.`create_time` DESC
+    </select>
+
+    <select id="getSegment" resultType="BookSegment">
+        SELECT
+            `bookSegment`.`id`,
+            `bookSegment`.`icon`,
+            `bookSegment`.`text`,
+            `bookSegment`.`audio`
+        FROM
+            `t_book_segment` AS `bookSegment`
+        WHERE
+            `bookSegment`.`del_flag` = FALSE AND `bookSegment`.`book_id` = #{_parameter }
+        ORDER BY
+            `bookSegment`.`create_time` ASC
+    </select>
+
+    <insert id="add" parameterType="java.util.HashMap" keyProperty="id">
+        INSERT INTO `t_book`(
+            `name`,
+            `icon`,
+            `price`,
+            `fit`,
+            `outline`,
+            `feeling`,
+            `tag`,
+            `repeat_active_time`,
+            `active`,
+            `rich_text`,
+            `sort`
+        )VALUES(
+            #{name},
+            #{icon,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler},
+            #{price},
+            #{fit},
+            #{outline},
+            #{feeling},
+            #{tag,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler},
+            #{repeatActiveTime},
+            #{active},
+            #{richtext},
+            #{sort}
+        )
+    </insert>
+
+    <update id="edit" parameterType="java.util.HashMap">
+        UPDATE `t_book`
+        SET
+            `name` = #{name},
+            `icon` = #{icon,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler},
+            `price` = #{price},
+            `fit` = #{fit},
+            `outline` = #{outline},
+            `feeling` = #{feeling},
+            `tag` = #{tag,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler},
+            `repeat_active_time` = #{repeatActiveTime},
+            `active` = #{active},
+            `rich_text` = #{richtext},
+            `sort` = #{sort}
+        WHERE `id` = #{id}
+    </update>
+
+    <update id="del" parameterType="java.lang.Integer">
+        UPDATE `t_book`
+        SET
+            `del_flag` = TRUE
+        WHERE `id` = #{_parameter}
+    </update>
+
+    <select id="search" parameterType="java.lang.String" resultType="Book">
+        SELECT
+            `book`.`id`,
+            `book`.`name`
+        FROM
+            `t_book` AS `book`
+        WHERE
+            `book`.`del_flag` = FALSE
+            AND (`book`.`id` LIKE CONCAT('%',#{_parameter},'%') OR `book`.`name` LIKE CONCAT('%',#{_parameter},'%') OR `book`.`tag` LIKE CONCAT('%',#{_parameter},'%'))
+        ORDER BY
+            `book`.`sort` DESC,
+            `book`.`create_time` DESC
+    </select>
+
+    <select id="count" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            `t_book` AS `book`
+        WHERE
+            `book`.`del_flag` = FALSE
+    </select>
+
+</mapper>

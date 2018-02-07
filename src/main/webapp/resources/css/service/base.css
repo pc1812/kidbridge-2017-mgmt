@@ -1,0 +1,320 @@
+*:focus {
+    outline:none;
+}
+tr td,tr th {
+    text-align: center;
+}
+pre {
+    height: 100%;
+    margin-bottom: 0;
+    overflow-y:scroll;
+}
+.float-e-margins .btn {
+    margin-bottom: 0px;
+}
+.book-view, .book-add-view, .course-view, .article-view, .bookshelf-view {
+    width: 600px;
+}
+.book-add-icon,.course-add-icon,.bookshelf-add-icon {
+    font-size: 40px;
+    line-height: 450px;
+    text-align: center;
+    width: 100%;
+}
+.book-add-icon:hover,.course-add-icon:hover,.bookshelf-add-icon:hover,.whirligig-add-icon:hover {
+    cursor: pointer;
+}
+.book-icon, .course-icon,.bookshelf-icon {
+    width: 100%;
+}
+.book-icon img, .course-icon img, .bookshelf-icon img {
+    margin: 15px 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0px 5px 10px #ddd;
+}
+.slick-slider {
+    margin-bottom: 0;
+}
+.book-icon .slick-center {
+    -moz-transform:scale(1.08);
+    -ms-transform:scale(1.08);
+    -o-transform:scale(1.08);
+    -webkit-transform:scale(1.08);
+    /* transform:scale(1.08); */
+}
+.book-segment-detail {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+}
+.book-segment-schedule {
+    font-weight: bold;
+    padding-bottom: 10px;
+}
+.book-segment-text {
+    height: 150px;
+    overflow: hidden;
+}
+.book-segment-body {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+}
+.slick-center .book-segment-text {
+    overflow-y :auto;
+}
+.book-segment-audio {
+    font-size: 30px;
+    text-align: center;
+    margin-top: 10px;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+.book-segment-audio button {
+    margin-left: 5px;
+}
+.book-segment-icon {
+    margin-bottom: 5px;
+}
+.book-segment-icon img {
+    width: 100%;
+    height: 200px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+.uploadifive-queue {
+    display: none;
+}
+.image-upload {
+    padding: 10px;
+}
+.image-upload-list .detail {
+    width: 100px;
+    margin-right: 7.5px;
+    display: inline-block;
+}
+.image-upload-list .detail:last-child {
+    margin-right: 0;
+}
+.image-upload-list .detail a:last-child {
+    margin-left: 0;
+}
+.image-upload-list .detail a {
+    margin-right: 5px;
+}
+.image-upload-list img {
+    margin-bottom: 10px;
+}
+.thumbnail {
+    margin-bottom: 0;
+}
+.book-segment-add-icon {
+    line-height: 458px;
+    text-align: center;
+    width: 100%;
+    font-size: 40px;
+    border: 1px solid #ddd;
+}
+.book-segment-add-icon:hover {
+    cursor: pointer;
+}
+.book-segment-icon-edit {
+    position: absolute;
+    z-index: 2;
+    top:20px;
+    width: 538px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    line-height: 200px;
+}
+.book-segment-add-icon-add {
+    line-height: 200px;
+    text-align: center;
+    width: 100%;
+    font-size: 40px;
+    border: 1px solid #ddd;
+}
+.book-segment-add-icon-add:hover {
+    cursor: pointer;
+}
+.btn-audio-upload {
+    margin-top: 5px;
+}
+.book-richtext-body, .course-richtext-body {
+    max-height: 350px;
+    overflow-y:scroll;
+}
+.course-book-list img {
+    max-height: 428px;
+}
+.icon-prev {
+    width: 25px;
+    border: 1px solid #ddd;
+    line-height: 428px;
+    text-align: center;
+}
+.icon-next {
+    width: 25px;
+    border: 1px solid #ddd;
+    line-height: 428px;
+    text-align: center;
+
+}
+.course-book-list img {
+    border: 1px solid #ddd;
+    box-shadow: 0px 5px 10px #ddd;
+}
+.course-book-add-icon {
+    line-height: 382px;
+    font-size: 40px;
+    width: 100%;
+}
+.course-book-add-icon:hover {
+    cursor: pointer;
+}
+.list-group-item div {
+    display: inline-block;
+}
+.book-name {
+    border-right: 1px solid #ddd;
+    margin-right: 15px;
+}
+.list-group-item .book-name {
+    width: 432px;
+}
+.course-book .list-group-item {
+    text-align: left;
+}
+.bookshelf-icon .view img {
+    width: 570px;
+}
+.bookshelf-icon-edit {
+    position: absolute;
+    z-index: 2;
+    top:0px;
+    left: 15px;
+    width: 570px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    line-height: 428px;
+}
+.bookshelf-cover-add-icon {
+    font-size: 40px;
+    line-height: 169px;
+    text-align: center;
+    width: 100%;
+}
+.bookshelf-cover-icon img {
+    width: 100%;
+    max-height: 200px;
+}
+.bookshelf-cover-add-icon:hover {
+    cursor: pointer;
+}
+.bookshelf-cover .view img {
+    width: 570px;
+    height: 245px;
+    border: 1px solid #ddd;
+}
+.user-head {
+    height: 40px;
+    width: 40px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+.user.table > tbody > tr > td {
+    line-height: 40px;
+}
+.table > tfoot > tr > td {
+    padding-left:0;
+}
+.login {
+    width: 500px;
+    margin: 20% auto;
+}
+.copyright {
+    margin-top: 10px;
+}
+.login-form .input-group:first-child {
+    margin-bottom: 10px;
+}
+.login-form button {
+    margin-top: 15px;
+}
+.filter-select {
+    color: #262626;
+    text-decoration: none;
+    background-color: #f5f5f5;
+}
+.note-editable *,.book-richtext *,.course-richtext * {
+    max-width: 100%;
+}
+.preview {
+    height: 300px;
+    border: 1px solid red;
+    background-color: #f7f7f7;
+    text-align: center;
+    width: 100%;
+    overflow: hidden;
+}
+.img-preview > img {
+    max-width: 100%;
+}
+.list-group-item .num {
+    width: 40px;
+    text-align: center;
+    padding-right: 15px;
+    border-right: 1px solid #ddd;
+}
+.list-group-item .text {
+    padding-left: 15px;
+    width: 407px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    -o-text-overflow:ellipsis;
+    -webkit-text-overflow:ellipsis;
+    -moz-text-overflow:ellipsis;
+    white-space:nowrap;
+    position: relative;
+    top:4px;
+}
+.list-group-item .text_1 {
+    padding-left: 15px;
+    width: 490px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    -o-text-overflow:ellipsis;
+    -webkit-text-overflow:ellipsis;
+    -moz-text-overflow:ellipsis;
+    white-space:nowrap;
+    position: relative;
+    top:4px;
+}
+.list-group-item .control {
+    border-left: 1px solid #ddd;
+    padding-left: 15px;
+}
+.whirligig tr td {
+    line-height: 150px !important;
+}
+.whirligig tr td img {
+    height: 150px;
+}
+.whirligig-icon {
+    height: 298px;
+}
+.whirligig-add-icon {
+    font-size: 40px;
+    line-height: 298px;
+    text-align: center;
+    width: 100%;
+}
+.pagination {
+    margin: 0;
+    padding: 0;
+}
+.pagination li a {
+    line-height: 25px;
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.$51zhiyuan.development.kidbridge.dao.admin">
+
+    <select id="get" resultType="Admin">
+        SELECT
+            `admin`.`id`,
+            `admin`.`name`,
+            `admin`.`password`
+        FROM
+            `t_admin` AS `admin`
+        WHERE
+            `admin`.`del_flag` = FALSE
+            AND `admin`.`name` = #{name}
+    </select>
+
+</mapper>

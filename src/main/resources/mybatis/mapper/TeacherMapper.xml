@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.$51zhiyuan.development.kidbridge.dao.teacher">
+
+    <select id="search" parameterType="java.lang.String" resultType="Teacher">
+        SELECT
+            `teacher`.`id`,
+            `teacher`.`realname`,
+            `user`.`id` AS `user.id`,
+            `user`.`nickname` AS `user.nickname`
+        FROM
+            `t_teacher` AS `teacher`
+        LEFT JOIN
+            (SELECT * FROM `t_user` AS user WHERE user.del_flag = FALSE ) AS `user` ON `user`.`id` = `teacher`.`user_id`
+        WHERE
+            `teacher`.`del_flag` = FALSE
+            AND (`user`.`id` LIKE CONCAT('%',#{_parameter},'%') OR `teacher`.`realname` LIKE CONCAT('%',#{_parameter},'%'))
+    </select>
+
+    <select id="list" resultType="Teacher">
+        SELECT
+            `teacher`.`id`,
+            `teacher`.`realname`,
+            `user`.`id` AS `user.id`,
+            `user`.`nickname` AS `user.nickname`
+        FROM
+            `t_teacher` AS `teacher`
+        LEFT JOIN
+            (SELECT * FROM `t_user` AS user WHERE user.del_flag = FALSE ) AS `user` ON `user`.`id` = `teacher`.`user_id`
+        WHERE
+            `teacher`.`del_flag` = FALSE
+        ORDER BY
+            `teacher`.`create_time` DESC
+    </select>
+
+    <insert id="add" parameterType="java.util.HashMap">
+        INSERT INTO `t_teacher`(
+            `user_id`,
+            `realname`
+        )VALUES(
+            #{user.id},
+            #{realname}
+        )
+    </insert>
+
+    <update id="edit" parameterType="java.util.HashMap">
+        UPDATE `t_teacher`
+        SET
+            `realname` = #{realname}
+        WHERE `id` = #{id}
+    </update>
+
+</mapper>

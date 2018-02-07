@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.$51zhiyuan.development.kidbridge.dao.bookshelf">
+
+    <resultMap id="simpleResultMap" type="Bookshelf">
+        <id property="id" column="bookshelf_id" />
+        <result property="name" column="bookshelf_name" />
+        <result property="fit" column="bookshelf_fit" />
+        <result property="tag" column="bookshelf_tag" typeHandler="net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler" />
+        <association property="bookshelfHot" javaType="BookshelfHot">
+            <id property="id" column="bookshelfHot_id" />
+        </association>
+        <association property="bookshelfRecommend" javaType="BookshelfRecommend">
+            <id property="id" column="bookshelfRecommend_id" />
+        </association>
+    </resultMap>
+
+    <select id="list" resultMap="simpleResultMap">
+        SELECT
+            `bookshelf`.`id` AS `bookshelf_id`,
+            `bookshelf`.`name` AS `bookshelf_name`,
+            `bookshelf`.`fit` AS `bookshelf_fit`,
+            `bookshelf`.`tag` AS `bookshelf_tag`,
+            `bookshelfHot`.`id` AS `bookshelfHot_id`,
+            `bookshelfRecommend`.`id` AS `bookshelfRecommend_id`
+        FROM
+            `t_bookshelf` AS `bookshelf`
+		LEFT JOIN
+			(SELECT * FROM t_bookshelf_hot AS bookshelfHot WHERE bookshelfHot.del_flag = FALSE) AS bookshelfHot ON bookshelfHot.bookshelf_id = bookshelf.id
+		LEFT JOIN
+			(SELECT * FROM t_bookshelf_recommend AS bookshelfRecommend WHERE bookshelfRecommend.del_flag = FALSE) AS bookshelfRecommend ON bookshelfRecommend.bookshelf_id = bookshelf.id
+        WHERE
+            `bookshelf`.`del_flag` = FALSE
+            <if test="fit != null and fit != ''">
+                AND `bookshelf`.`fit` = #{fit}
+            </if>
+        ORDER BY
+			`bookshelf`.`create_time` DESC
+    </select>
+
+    <resultMap id="getResultMap" type="Bookshelf">
+        <id property="id" column="bookshelf_id" />
+        <result property="name" column="bookshelf_name" />
+        <result property="icon" column="bookshelf_icon" />
+        <result property="cover" column="bookshelf_cover" typeHandler="net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler" />
+        <result property="fit" column="bookshelf_fit" />
+        <result property="tag" column="bookshelf_tag" typeHandler="net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler" />
+        <collection property="bookList" ofType="Book">
+            <id property="id" column="book_id" />
+            <result property="name" column="book_name" />
+        </collection>
+    </resultMap>
+
+    <select id="get" parameterType="java.lang.Integer" resultMap="getResultMap">
+        SELECT
+            `bookshelf`.`id` AS `bookshelf_id`,
+            `bookshelf`.`name` AS `bookshelf_name`,
+            `bookshelf`.`icon` AS `bookshelf_icon`,
+            `bookshelf`.`cover` AS `bookshelf_cover`,
+            `bookshelf`.`fit` AS `bookshelf_fit`,
+            `bookshelf`.`tag` AS `bookshelf_tag`,
+            `book`.`id` AS `book_id`,
+            `book`.`name` AS `book_name`
+        FROM
+            `t_bookshelf` AS `bookshelf`
+		LEFT JOIN
+			(SELECT * FROM `t_bookshelf_detail` AS `bookshelfDetail` WHERE `bookshelfDetail`.`del_flag` = FALSE) AS `bookshelfDetail` ON `bookshelfDetail`.`bookshelf_id` = `bookshelf`.`id`
+        LEFT JOIN
+			(SELECT * FROM `t_book` AS `book` WHERE `book`.`del_flag` = FALSE) AS `book` ON `book`.`id` = `bookshelfDetail`.`book_id`
+        WHERE
+			`bookshelf`.`del_flag` = FALSE
+            AND `bookshelf`.`id` = #{_parameter}
+        ORDER BY
+			`bookshelf`.`create_time` DESC
+    </select>
+
+    <insert id="add" parameterType="java.util.HashMap" keyProperty="id">
+        INSERT INTO `t_bookshelf`(
+            `name`,
+            `icon`,
+            `cover`,
+            `fit`,
+            `tag`
+        )VALUES(
+            #{name},
+            #{icon},
+            #{cover,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler},
+            #{fit},
+            #{tag,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler}
+        )
+    </insert>
+
+    <update id="edit" parameterType="java.util.HashMap">
+        UPDATE `t_bookshelf`
+        SET
+            `name` = #{name},
+            `icon` = #{icon},
+            `cover` = #{cover,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler},
+            `fit` = #{fit},
+            `tag` = #{tag,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler}
+        WHERE `id` = #{id}
+    </update>
+
+    <update id="del" parameterType="java.lang.Integer">
+        UPDATE `t_bookshelf`
+        SET
+            `del_flag` = TRUE
+        WHERE `id` = #{_parameter}
+    </update>
+
+    <insert id="recommend" parameterType="java.lang.Integer">
+        INSERT INTO `t_bookshelf_recommend`(
+            `bookshelf_id`
+        )VALUES(
+            #{_parameter}
+        )
+    </insert>
+
+    <insert id="hot" parameterType="java.lang.Integer">
+        INSERT INTO `t_bookshelf_hot`(
+            `bookshelf_id`
+        )VALUES(
+            #{_parameter}
+        )
+    </insert>
+
+    <update id="recommendCancel" parameterType="java.lang.Integer">
+        UPDATE `t_bookshelf_recommend`
+        SET
+            `del_flag` = TRUE
+        WHERE `id` = #{_parameter}
+    </update>
+
+    <update id="hotCancel" parameterType="java.lang.Integer">
+        UPDATE `t_bookshelf_hot`
+        SET
+            `del_flag` = TRUE
+        WHERE `id` = #{_parameter}
+    </update>
+
+</mapper>

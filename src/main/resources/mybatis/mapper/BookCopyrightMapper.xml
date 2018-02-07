@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.$51zhiyuan.development.kidbridge.dao.bookCopyright">
+
+    <resultMap id="simpleResultMap" type="BookCopyright">
+        <id property="id" column="id" />
+        <result property="delFlag" column="del_flag" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+        <association property="book" javaType="Book">
+            <id property="id" column="book_id" />
+        </association>
+        <association property="user" javaType="User">
+            <id property="id" column="user_id" />
+        </association>
+    </resultMap>
+
+    <insert id="add" parameterType="java.util.HashMap">
+        INSERT INTO `t_book_copyright`(
+            `book_id`,
+            `user_id`
+        )VALUES(
+            #{bookId},
+            #{userId}
+        )
+    </insert>
+
+    <select id="get" parameterType="java.util.HashMap" resultMap="simpleResultMap">
+        SELECT
+            `bookCopyright`.`id`,
+            `bookCopyright`.`book_id`,
+            `bookCopyright`.`user_id`,
+            `bookCopyright`.`del_flag`,
+            `bookCopyright`.`create_time`,
+            `bookCopyright`.`update_time`
+        FROM
+            `t_book_copyright` AS `bookCopyright`
+        WHERE
+            `bookCopyright`.`del_flag` = FALSE AND
+            `bookCopyright`.`book_id` = #{bookId}
+    </select>
+
+    <update id="edit" parameterType="java.util.HashMap">
+        UPDATE `t_book_copyright`
+            SET
+                `user_id` = #{userId}
+            WHERE
+                `id` = #{id}
+    </update>
+
+</mapper>

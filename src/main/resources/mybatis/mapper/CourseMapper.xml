@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.$51zhiyuan.development.kidbridge.dao.course">
+
+    <resultMap id="simpleResultMap" type="Course">
+        <id property="id" column="course_id" />
+        <result property="name" column="course_name" />
+        <result property="fit" column="course_fit" />
+        <result property="limit" column="course_limit" />
+        <result property="enter" column="course_enter" />
+        <result property="cycle" column="course_cycle" />
+        <result property="status" column="course_status" />
+        <result property="startTime" column="course_start_time" />
+        <result property="price" column="course_price" />
+        <result property="tag" column="course_tag" typeHandler="net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler" />
+        <result property="bookCount" column="book_count" />
+        <association property="teacher" javaType="Teacher">
+            <id property="id" column="teacher_id" />
+            <result property="realname" column="teacher_realname" />
+        </association>
+        <association property="courseHot" javaType="CourseHot">
+            <id property="id" column="courseHot_id" />
+        </association>
+    </resultMap>
+
+    <select id="list" resultMap="simpleResultMap">
+        SELECT
+            `teacher`.`id` AS `teacher_id`,
+            `teacher`.`realname` AS `teacher_realname`,
+            `course`.`id` AS `course_id`,
+            `course`.`name` AS `course_name`,
+            `course`.`fit` AS `course_fit`,
+            `course`.`limit` AS `course_limit`,
+            (SELECT COUNT(*) FROM `t_user_course` AS `userCourse` WHERE `userCourse`.`del_flag` = FALSE AND `userCourse`.`course_id` = `course`.`id`) AS `course_enter`,
+            (SELECT SUM(`cycle`) FROM `t_course_detail` AS `courseDetail` WHERE `courseDetail`.del_flag = FALSE AND `courseDetail`.`course_id` = `course`.`id`) AS `course_cycle`,
+            (IF((NOW() >= `course`.`start_time`),IF((DATE_ADD(`course`.`start_time`,INTERVAL (SELECT SUM(`cycle`) FROM `t_course_detail` AS `courseDetail` WHERE `courseDetail`.del_flag = FALSE AND `courseDetail`.`course_id` = `course`.`id`) DAY) >= NOW()),1,2),0)) AS `course_status`,
+            `course`.`start_time` AS `course_start_time`,
+            `course`.`price` AS `course_price`,
+            `course`.`tag`AS `course_tag`,
+            `courseHot`.`id` AS `courseHot_id`,
+            (SELECT COUNT(*) FROM `t_course_detail` AS `courseDetail` WHERE `courseDetail`.`del_flag` = FALSE AND `courseDetail`.`course_id` = `course`.`id` ) AS `book_count`
+        FROM
+            `t_course` AS `course`
+        LEFT JOIN
+			(SELECT * FROM `t_teacher` AS `teacher` WHERE `teacher`.`del_flag` = FALSE) AS `teacher` ON `teacher`.`id` = `course`.`teacher_id`
+		LEFT JOIN
+			(SELECT * FROM `t_course_hot` AS `courseHot` WHERE `courseHot`.`del_flag` = FALSE) AS `courseHot` ON `courseHot`.`course_id` = `course`.`id`
+        WHERE
+            `course`.`del_flag` = FALSE
+            <if test="fit != null and fit != ''">
+                AND `course`.`fit` = #{fit}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (`course`.`id` LIKE CONCAT('%',#{keyword},'%') OR `course`.`name` LIKE CONCAT('%',#{keyword},'%'))
+            </if>
+        ORDER BY
+            `course`.`create_time` DESC
+    </select>
+
+    <resultMap id="getResultMap" type="Course">
+        <id property="id" column="course_id" />
+        <result property="name" column="course_name" />
+        <result property="icon" column="course_icon" typeHandler="net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler" />
+        <result property="tag" column="course_tag" typeHandler="net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler" />
+        <result property="fit" column="course_fit" />
+        <result property="price" column="course_price" />
+        <result property="enter" column="course_enter" />
+        <result property="limit" column="course_limit" />
+        <result property="cycle" column="course_cycle" />
+        <result property="richText" column="course_rich_text" />
+        <result property="status" column="course_status" />
+        <result property="startTime" column="course_start_time" />
+        <association property="copyright" javaType="CourseCopyright">
+            <association property="user" javaType="User">
+                <id property="id" column="courseCopyright_user_id" />
+            </association>
+        </association>
+        <association property="teacher" javaType="Teacher">
+            <id property="id" column="teacher_id" />
+            <result property="realname" column="teacher_realname" />
+        </association>
+        <collection property="bookList" ofType="Book">
+            <id property="id" column="book_id" />
+            <result property="name" column="book_name" />
+            <result property="icon" column="book_icon" typeHandler="net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler" />
+        </collection>
+        <collection property="userList" ofType="User">
+            <id property="id" column="user_id" />
+            <result property="nickname" column="user_nickname" />
+        </collection>
+    </resultMap>
+
+    <select id="get" resultMap="getResultMap" parameterType="java.lang.Integer">
+        SELECT
+            `teacher`.`id` AS `teacher_id`,
+            `teacher`.`realname` AS `teacher_realname`,
+            `book`.`id` AS `book_id`,
+            `book`.`name` AS `book_name`,
+            `book`.`icon` AS `book_icon`,
+            `course`.`id` AS `course_id`,
+            `course`.`name` AS `course_name`,
+            `course`.`icon` AS `course_icon`,
+            `course`.`tag` AS `course_tag`,
+            `course`.`fit` AS `course_fit`,
+            `course`.`rich_text` AS `course_rich_text`,
+            `course`.`price` AS `course_price`,
+            `course`.`start_time` AS `course_start_time`,
+            `user`.`id` AS `user_id`,
+            `user`.`nickname` AS `user_nickname`,
+            (SELECT COUNT(*) FROM `t_user_course` AS `userCourse` WHERE `userCourse`.del_flag = FALSE AND `userCourse`.`course_id` = `course`.`id`) AS `course_enter`,
+            `course`.`limit` AS course_limit,
+            (SELECT SUM(`cycle`) FROM `t_course_detail` AS `courseDetail` WHERE `courseDetail`.del_flag = FALSE AND `courseDetail`.`course_id` = `course`.`id`) AS `course_cycle`,
+            (IF((NOW() >= `course`.`start_time`),IF((DATE_ADD(`course`.`start_time`,INTERVAL (SELECT SUM(`cycle`) FROM `t_course_detail` AS `courseDetail` WHERE `courseDetail`.del_flag = FALSE AND `courseDetail`.`course_id` = `course`.`id`) DAY) >= NOW()),1,2),0)) AS `course_status`,
+			IFNULL(courseCopyright.user_id,-1) AS `courseCopyright_user_id`
+        FROM
+            `t_course` AS `course`
+		LEFT JOIN
+		    (SELECT * FROM `t_course_copyright` AS `courseCopyright` WHERE `courseCopyright`.`del_flag` = FALSE) AS `courseCopyright` ON `courseCopyright`.`course_id` = `course`.`id`
+        LEFT JOIN
+			(SELECT * FROM `t_teacher` AS `teacher` WHERE `teacher`.`del_flag` = FALSE) AS `teacher` ON `teacher`.`id` = `course`.`teacher_id`
+		LEFT JOIN
+			(SELECT * FROM `t_course_detail` AS `courseDetail` WHERE `courseDetail`.`del_flag` = FALSE ) AS `courseDetail` ON `courseDetail`.`course_id` = `course`.`id`
+		LEFT JOIN
+			(SELECT * FROM `t_book` AS `book` WHERE `book`.`del_flag` = FALSE) AS `book` ON `book`.`id` = `courseDetail`.`book_id`
+		LEFT JOIN
+			(SELECT * FROM `t_user_course` AS `userCourse` WHERE `userCourse`.`del_flag` = FALSE) AS `userCourse` ON `userCourse`.`course_id` = `course`.`id`
+		LEFT JOIN
+			(SELECT * FROM `t_user` AS `user` WHERE `user`.`del_flag` = FALSE) AS `user` ON `user`.`id` = `userCourse`.`user_id`
+        WHERE
+            `course`.`del_flag` = FALSE
+            AND `course`.`id` = #{_parameter}
+        ORDER BY
+            `course`.`create_time` DESC
+    </select>
+
+    <update id="del" parameterType="java.lang.Integer">
+        UPDATE `t_course`
+        SET
+            `del_flag` = TRUE
+        WHERE `id` = #{_parameter}
+    </update>
+
+    <insert id="add" parameterType="java.util.HashMap" keyProperty="id">
+        INSERT INTO `t_course`(
+            `teacher_id`,
+            `name`,
+            `icon`,
+            `fit`,
+            `limit`,
+            `start_time`,
+            `price`,
+            `tag`,
+            `rich_text`
+        )VALUES(
+            #{teacher.id},
+            #{name},
+            #{icon,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler},
+            #{fit},
+            #{limit},
+            #{startTime},
+            #{price},
+            #{tag,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler},
+            #{richtext}
+        )
+    </insert>
+
+    <update id="edit" parameterType="java.util.HashMap">
+        UPDATE `t_course`
+        SET
+            `teacher_id` = #{teacher.id},
+            `name` = #{name},
+            `icon` = #{icon,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler},
+            `fit` = #{fit},
+            `limit` = #{limit},
+            `start_time` = #{startTime},
+            `price` = #{price},
+            `tag` = #{tag,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler},
+            `rich_text` = #{richtext}
+        WHERE `id` = #{id}
+
+    </update>
+
+    <insert id="hot" parameterType="java.lang.Integer">
+        INSERT INTO `t_course_hot`(
+            `course_id`
+        )VALUES(
+            #{_parameter}
+        )
+    </insert>
+
+    <update id="hotCancel" parameterType="java.lang.Integer">
+        UPDATE `t_course_hot`
+        SET
+            `del_flag` = TRUE
+        WHERE `id` = #{_parameter}
+    </update>
+
+    <select id="count" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            `t_course` AS `course`
+        WHERE
+            `course`.`del_flag` = FALSE
+    </select>
+
+</mapper>
