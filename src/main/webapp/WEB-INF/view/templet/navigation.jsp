@@ -128,6 +128,12 @@
                     <span class="nav-label">意见反馈</span>
                 </a>
             </li>
+            <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/version/") ? " class=\"active\"" : ""}>
+                <a href="/version/list">
+                    <i class="fa fa-gear"></i>
+                    <span class="nav-label">版本管理</span>
+                </a>
+            </li>
             <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/setting/") ? " class=\"active\"" : ""}>
                 <a href="/setting/list">
                     <i class="fa fa-gear"></i>

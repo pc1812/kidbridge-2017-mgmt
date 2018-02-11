@@ -12,6 +12,7 @@ import net.$51zhiyuan.development.kidbridge.module.Configuration;
 import net.$51zhiyuan.development.kidbridge.module.ZipUtil;
 import net.$51zhiyuan.development.kidbridge.ui.model.Book;
 import net.$51zhiyuan.development.kidbridge.ui.model.BookSegment;
+import net.$51zhiyuan.development.kidbridge.ui.model.Version;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -19,14 +20,13 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.xmlpull.v1.XmlPullParserException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,6 +42,9 @@ public class FileService {
     private long uploadTokenQuietTime = -1;
 
     private final String tempPath = System.getProperty("java.io.tmpdir");
+
+    @Autowired
+    private VersionService versionService;
 
     /**
      * 构建七牛Auth对象
@@ -71,6 +74,7 @@ public class FileService {
         Map<String,Object> policy = new HashMap();
         policy.put("scope", Configuration.property(Configuration.QINIU_BUCKET));
         policy.put("deadline", this.getUploadTokenQuietTime());
+        policy.put("fname","hello.apk");
         return policy;
     }
 
@@ -214,7 +218,7 @@ public class FileService {
         return book;
     }
 
-    public Book localUpload(HttpServletRequest request) throws FileUploadException, IOException {
+    public Book bookUpload(HttpServletRequest request) throws FileUploadException, IOException {
         boolean isMultipart = ServletFileUpload.isMultipartContent(request);
         if (isMultipart) {
             ServletContext servletContext = request.getServletContext();
@@ -237,12 +241,47 @@ public class FileService {
         return new Book();
     }
 
+    public Version apkUpload(HttpServletRequest request) throws FileUploadException, IOException, XmlPullParserException {
+        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+        if (isMultipart) {
+            ServletContext servletContext = request.getServletContext();
+            File repository = (File) servletContext.getAttribute("javax.servlet.context.tempdir");
+            DiskFileItemFactory factory = new DiskFileItemFactory();
+            factory.setSizeThreshold(4096);
+            factory.setRepository(repository);
+            ServletFileUpload upload = new ServletFileUpload(factory);
+            upload.setHeaderEncoding("utf-8");
+            List<FileItem> items = upload.parseRequest(request);
+            for (FileItem item : items) {
+                if (!item.isFormField()) {
+                    if (item.getSize() == 0) {
+                        continue;
+                    }
+                    String number = this.versionService.getNumber(item.get());
+                    String key = UUID.randomUUID().toString().replace("-","") + ".apk";
+                    Version version = new Version().setDevice(0).setContent(key).setNumber(number);
+                    this.versionService.add(version);
+                    return version;
+                }
+            }
+        }
+        return new Version();
+    }
+
     public String upload(File file) throws QiniuException {
-        FileService fileService = new FileService();
-        String uploadToken = fileService.getToken();
+        String uploadToken = this.getToken();
         com.qiniu.storage.Configuration cfg = new com.qiniu.storage.Configuration(Zone.zone0());
         UploadManager uploadManager = new UploadManager(cfg);
         Response response = uploadManager.put(file.getPath(), null, uploadToken);
+        DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+        return putRet.key;
+    }
+
+    public String upload(String key,byte[] file) throws QiniuException {
+        String uploadToken = this.getToken();
+        com.qiniu.storage.Configuration cfg = new com.qiniu.storage.Configuration(Zone.zone0());
+        UploadManager uploadManager = new UploadManager(cfg);
+        Response response = uploadManager.put(file, key, uploadToken);
         DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
         return putRet.key;
     }

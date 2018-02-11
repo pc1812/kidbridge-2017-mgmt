@@ -37,6 +37,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>android4me</groupId>
+            <artifactId>AXMLPrinter</artifactId>
+            <version>20081010</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.15</version>
