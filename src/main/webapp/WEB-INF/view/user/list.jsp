@@ -29,7 +29,7 @@
                     <a class="minimalize-styl-2 btn btn-primary " href="javascript:"><i class="fa fa-search"></i> </a>
                     <form role="search" class="navbar-form-custom" method="get" action="/user/list" style="width: 250px;">
                         <div class="form-group">
-                            <input type="text" placeholder="输入绘本编号或名称进行检索" value="${param.keyword }" class="form-control" name="keyword" id="top-search">
+                            <input type="text" placeholder="输入用户编号、手机号、昵称进行检索" value="${param.keyword }" class="form-control" name="keyword" id="top-search">
                         </div>
                     </form>
                 </div>

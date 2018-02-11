@@ -259,6 +259,7 @@ public class FileService {
                     }
                     String number = this.versionService.getNumber(item.get());
                     String key = UUID.randomUUID().toString().replace("-","") + ".apk";
+                    this.upload(key,item.get());
                     Version version = new Version().setDevice(0).setContent(key).setNumber(number);
                     this.versionService.add(version);
                     return version;
