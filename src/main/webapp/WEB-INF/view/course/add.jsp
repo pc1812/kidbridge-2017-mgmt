@@ -86,12 +86,13 @@
                                     </div>
                                     <div class="panel image-upload panel-default" style="display: ${not empty course.icon ? "block" : "none" }">
                                         <div class="panel-body image-upload-list" style="padding: 0;">
-                                            <c:forEach items="${course.icon }" var="icon">
-                                                <div class="detail text-center">
+                                            <c:forEach items="${course.icon }" var="icon" varStatus="status">
+                                                <div data-id="${status.index }" class="detail text-center" data-icon="http://res.kidbridge.org/${icon }">
                                                     <input type="hidden" name="course-icon" value="${icon }" />
                                                     <img src="http://res.kidbridge.org/${icon }" class="thumbnail img-responsive" />
-                                                    <a href="http://res.kidbridge.org/${icon }" target='_blank' class="btn btn-primary btn-xs">查看</a>
-                                                    <a href="javascript:" class="btn btn-danger btn-xs book-add-icon-delete">删除</a>
+                                                    <a href="http://res.kidbridge.org/${icon }" target='_blank' class="btn btn-primary btn-xs view">查</a>
+                                                    <a href="javascript:" class="btn btn-danger btn-xs book-add-icon-delete">删</a>
+                                                    <a href="javascript:" class="btn btn-primary btn-xs book-add-icon-edit">改</a>
                                                 </div>
                                             </c:forEach>
                                         </div>
@@ -102,7 +103,7 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading">出售价格</div>
                                             <div class="panel-body">
-                                                <input value="${course.price }" name="course-price" class="course-price form-control" type="text" placeholder="限整数或小数输入，输入“0”则免费" />
+                                                <input value="${empty course.price ? "10" : fn:substring(course.price, 0, fn:indexOf(course.price, '.') ) }" name="course-price" class="course-price form-control" type="text" placeholder="限整数输入，输入“0”则免费" />
                                             </div>
                                         </div>
                                     </div>
@@ -165,13 +166,15 @@
                                                     <option value="0"${course.fit eq 0 ? " selected=\"selected\"" : "" }>3-5岁</option>
                                                     <option value="1"${course.fit eq 1 ? " selected=\"selected\"" : "" }>6-8岁</option>
                                                     <option value="2"${course.fit eq 2 ? " selected=\"selected\"" : "" }>9-12岁</option>
+                                                    <option value="3"${course.fit eq 3 ? " selected=\"selected\"" : "" }>4-7岁</option>
+                                                    <option value="4"${course.fit eq 4 ? " selected=\"selected\"" : "" }>8-10岁</option>
                                                 </select>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="course-tag">
                                         <div class="panel panel-default">
-                                            <div class="panel-heading">关键词  ${course.teacher.realname} </div>
+                                            <div class="panel-heading">关键词</div>
                                             <div class="panel-body">
                                                 <input value="${fn:join(course.tag.toArray(), ", ") }" class="course-tag-input" type="text" placeholder="${empty course.tag ? "多个关键词输入“,”间隔" : "" }" />
                                             </div>
@@ -862,7 +865,7 @@
 
                         html += "<tr>";
                         html += "<td>"+teacher.user.id+"</td>";
-                        html += "<td>"+teacher.user.nickname+"</td>";
+                        html += "<td>"+(teacher.user.nickname.trim() == "" ? "未知" : (teacher.user.nickname.length > 9 ? (teacher.user.nickname.substring(0,9) + "...") : teacher.user.nickname) )+"</td>";
                         html += "<td>"+teacher.realname+"</td>";
                         html += "<td><a data-name=\""+teacher.realname+"\" data-id=\""+teacher.id+"\" href=\"javascript:;\">添加</a></td>";
                         html += "</tr>";
@@ -903,6 +906,24 @@
         }
         $(this).parents(".detail").remove();
     });
+    $(".image-upload-list").on("click",".book-add-icon-edit",function () {
+        var id = $(this).parent().data("id");
+        var icon = $(this).parent().data("icon");
+        $('#image-cut-a').cropper("destroy").attr('src', icon).cropper({
+            aspectRatio: 4 / 3,
+            zoomable: false,
+            dragMode:'none',
+            minCropBoxWidth:80,
+            autoCropArea:1,
+            viewMode:1,
+            minContainerWidth:540,
+            minContainerHeight:405
+        });
+        $("#image-cut .image-cut-save").data("id",id);
+        $("#image-cut").modal({
+            backdrop: "static"
+        },"show");
+    });
     $(".course-add-icon-upload").on("change",function () {
         var reader = new FileReader();
         reader.onload = function(e) {
@@ -925,6 +946,7 @@
         reader.readAsDataURL($(this).prop('files')[0]);
     });
     $(".image-cut-save").on("click",function () {
+        var id = $(this).data("id");
         $.ajax({
         url: "/file/token",
         async: false,
@@ -952,17 +974,29 @@
                     contentType: false,
                     processData: false,
                     success: function (resp) {
-                        var html = "";
-                        html += "<div class=\"detail text-center\">";
-                        html += "<input type=\"hidden\" name=\"course-icon\" value=\""+resp.key+"\" />";
-                        html += "<img src=\"http://res.kidbridge.org/"+resp.key+"\" class=\"thumbnail img-responsive\" />";
-                        html += "<a href=\"http://res.kidbridge.org/"+resp.key+"\" target='_blank' class=\"btn btn-primary btn-xs\">查看</a>";
-                        html += "<a href=\"javascript:;\" class=\"btn btn-danger btn-xs book-add-icon-delete\">删除</a>";
-                        html += "</div>";
-                        $(".image-upload-list").append(html);
+                        var len = $(".image-upload-list .detail").length;
+                        if(id == undefined){
+                            var html = "";
+                            html += "<div class=\"detail text-center\" data-id=\""+len+"\" data-icon=\"http://res.kidbridge.org/"+resp.key+"\">";
+                            html += "<input type=\"hidden\" name=\"course-icon\" value=\""+resp.key+"\" />";
+                            html += "<img src=\"http://res.kidbridge.org/"+resp.key+"\" class=\"thumbnail img-responsive\" />";
+                            html += "<a href=\"http://res.kidbridge.org/"+resp.key+"\" target='_blank' class=\"btn btn-primary btn-xs\">查</a>";
+                            html += "<a href=\"javascript:;\" class=\"btn btn-danger btn-xs book-add-icon-delete\">删</a>";
+                            html += "<a href=\"javascript:;\" class=\"btn btn-primary btn-xs book-add-icon-edit\">改</a>";
+                            html += "</div>";
+                            $(".image-upload-list").append(html);
+                            $(".image-upload").show();
+                            $(".course-add-icon-upload").val('');
+                        }else{
+                            var editnode = $(".image-upload-list .detail[data-id="+id+"]");
+                            $(editnode).data("icon","http://res.kidbridge.org/"+resp.key);
+                            $(editnode).find("input[name='course-icon']").val(resp.key);
+                            $(editnode).find("img").attr("src","http://res.kidbridge.org/"+resp.key);
+                            $(editnode).find(".view").attr("href","http://res.kidbridge.org/"+resp.key);
+                        }
                         $(".image-upload").show();
-                        $(".course-add-icon-upload").val('');
                         $("#image-cut").modal("hide");
+                        $(this).data("id",null);
                     }
                 });
             },'image/jpeg',0.7);

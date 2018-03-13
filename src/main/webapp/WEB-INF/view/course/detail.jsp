@@ -85,13 +85,19 @@
                                                     <c:when test="${course.fit eq '2' }">
                                                         9-12岁
                                                     </c:when>
+                                                    <c:when test="${course.fit eq '3' }">
+                                                        4-7岁
+                                                    </c:when>
+                                                    <c:when test="${course.fit eq '4' }">
+                                                        8-10岁
+                                                    </c:when>
                                                 </c:choose>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="course-tag">
                                         <div class="panel panel-default">
-                                            <div class="panel-heading">关键词  ${course.teacher.realname} </div>
+                                            <div class="panel-heading">关键词</div>
                                             <div class="panel-body">
                                                 ${fn:join(course.tag.toArray(), ", ") }
                                             </div>
@@ -143,29 +149,31 @@
                                         <div class="panel panel-default">
                                             <div class="panel-heading">报名用户</div>
                                             <div class="panel-body">
-                                                <c:choose>
-                                                    <c:when test="${not empty course.userList and course.userList.size() > 0}">
-                                                        <table class="table table-striped" style="margin-bottom: 0;border: 1px solid #ddd;">
-                                                            <thead>
-                                                            <tr>
-                                                                <th>用户编号</th>
-                                                                <th>用户昵称</th>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody>
+                                                <table class="table table-striped" style="margin-bottom: 0px;border: 1px solid #ddd;">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>用户编号</th>
+                                                        <th>用户昵称</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <c:choose>
+                                                            <c:when test="${not empty course.userList and course.userList.size() > 0}">
                                                                 <c:forEach items="${course.userList }" var="user">
                                                                     <tr>
                                                                         <td>${user.id }</td>
                                                                         <td>${user.nickname }</td>
                                                                     </tr>
                                                                 </c:forEach>
-                                                            </tbody>
-                                                        </table>
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        暂无
-                                                    </c:otherwise>
-                                                </c:choose>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <tr>
+                                                                    <td colspan="2">暂无</td>
+                                                                </tr>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.$51zhiyuan.development.kidbridge.dao.userBookRepeat">
+
+    <resultMap id="detailListResultMap" type="UserBookRepeat">
+        <id property="id" column="userBookRepeat_id" />
+        <result property="createTime" column="userBookRepeat_create_time" />
+        <result property="updateTime" column="userBookRepeat_update_time" />
+        <association property="userBook" javaType="UserBook">
+            <association property="user" javaType="User">
+                <id property="id" column="user_id" />
+                <result property="nickname" column="user_nickname" />
+            </association>
+            <association property="book" javaType="Book">
+                <id property="id" column="book_id" />
+                <result property="name" column="book_name" />
+            </association>
+        </association>
+    </resultMap>
+
+    <select id="detailList" resultMap="detailListResultMap">
+        SELECT
+            `book`.`id` AS `book_id`,
+            `book`.`name` AS `book_name`,
+            `user`.`id` AS `user_id`,
+            `user`.`nickname` AS `user_nickname`,
+            `userBookRepeat`.`id` AS `userBookRepeat_id`,
+            `userBookRepeat`.`create_time` AS `userBookRepeat_create_time`,
+            `userBookRepeat`.`update_time` AS `userBookRepeat_update_time`
+        FROM
+            `t_user_book_repeat` AS `userBookRepeat`
+        LEFT JOIN `t_user_book` AS `userBook` ON `userBook`.`id` = `userBookRepeat`.`user_book_id`
+        LEFT JOIN `t_user` AS `user` ON `user`.`id` = `userBook`.`user_id`
+        LEFT JOIN `t_book` AS `book` ON `book`.`id` = `userBook`.`book_id`
+        WHERE
+            `userBookRepeat`.`del_flag` = FALSE
+            <if test="beginDate != null and beginDate != ''">
+                AND DATE_FORMAT(`userBookRepeat`.`update_time`,'%Y-%m-%d') &gt;= #{beginDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND DATE_FORMAT(`userBookRepeat`.`update_time`,'%Y-%m-%d') &lt;= #{endDate}
+            </if>
+        ORDER BY
+            `userBookRepeat`.`update_time` ASC
+    </select>
+
+</mapper>

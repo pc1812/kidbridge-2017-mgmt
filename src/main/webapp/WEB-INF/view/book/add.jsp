@@ -156,6 +156,8 @@
                                                         <option value="0"${book.fit eq 0 ? " selected=\"selected\"" : "" }>3-5岁</option>
                                                         <option value="1"${book.fit eq 1 ? " selected=\"selected\"" : "" }>6-8岁</option>
                                                         <option value="2"${book.fit eq 2 ? " selected=\"selected\"" : "" }>9-12岁</option>
+                                                        <option value="3"${book.fit eq 3 ? " selected=\"selected\"" : "" }>4-7岁</option>
+                                                        <option value="4"${book.fit eq 4 ? " selected=\"selected\"" : "" }>8-10岁</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -180,7 +182,7 @@
                                             <div class="panel panel-default">
                                                 <div class="panel-heading">出售价格</div>
                                                 <div class="panel-body">
-                                                    <input value="${book.price }" name="book-price" class="book-price form-control" type="text" placeholder="限整数或小数输入，输入“0”则免费" />
+                                                    <input value="${empty book.price ? "10" : fn:substring(book.price, 0, fn:indexOf(book.price, '.') ) }" name="book-price" class="book-price form-control" type="text" placeholder="限整数输入，输入“0”则免费" />
                                                 </div>
                                             </div>
                                         </div>
@@ -208,6 +210,22 @@
                                                             </c:otherwise>
                                                         </c:choose>
                                                     </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="book-add-audio">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">完整音频</div>
+                                                <div class="panel-body" style="padding-bottom: 0px;">
+                                                    <input type="file" accept="audio/mpeg" name="book-add-audio-file" id="book-add-audio-file" data-key="${book.audio }" style="display: none;">
+                                                    <a href="http://res.kidbridge.org/${book.audio }" target="_blank" id="book-add-audio-file-show" class="btn btn-default btn-block" style="margin-bottom: 10px;display: ${empty book.audio ? "none" : "block" };">
+                                                        预览
+                                                    </a>
+                                                    <div class="add" style="margin-bottom: 15px;">
+                                                        <button type="button" class="btn btn-default btn-block btn-book-add-audio-file">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -408,6 +426,41 @@
 <script src="/resources/js/plugins/moment/moment.min.js"></script>
 <script src="/resources/js/service/base.js"></script>
 <script>
+    $(".btn-book-add-audio-file").on("click",function () {
+       $("#book-add-audio-file").trigger("click");
+    });
+    $("#book-add-audio-file").on("change",function (e) {
+        var file = e.target.files[0];
+        $.ajax({
+            url: "/file/token",
+            async: false,
+            contentType: "application/json",
+            dataType: "json",
+            success: function(resp){
+                if(resp.event != "SUCCESS"){
+                    return;
+                }
+                var formData = new FormData();
+                formData.append("token",resp.data.token);
+                formData.append("file",file);
+                $.ajax({
+                    async: false,
+                    url: 'http://upload.qiniu.com/' ,
+                    type: 'POST',
+                    data: formData,
+                    async: false,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (resp) {
+                        $("#book-add-audio-file").data("key",resp.key);
+                        $("#book-add-audio-file-show").attr("href","http://res.kidbridge.org/" + resp.key);
+                        $("#book-add-audio-file-show").show();
+                    }
+                });
+            }
+        });
+    });
     $(".user-search button").on("click",function () {
         var keyword = $(".user-search input").val();
         $(".user-search-result .pageblock").hide();
@@ -512,6 +565,11 @@
             $(".book-add-tool .result").show();
             $(".book-add-tool .result .text").text(data);
             var book = JSON.parse(data).book;
+
+            $("#book-add-audio-file").data("key",book.audio);
+            $("#book-add-audio-file-show").attr("href","http://res.kidbridge.org/" + book.audio);
+            $("#book-add-audio-file-show").show();
+
             $("input[name='book-name']").val(book.name);
             $("input[name='book-price']").val(0.00);
             $("textarea[name='book-outline']").val(book.outline);
@@ -788,6 +846,7 @@
                 });
             }
         });
+        book.audio = $("#book-add-audio-file").data("key");
         book.name = $("[name='book-name']").val();
         book.sort = $("[name='book-sort']").val();
         book.outline = $("[name='book-outline']").val();

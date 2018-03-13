@@ -12,6 +12,7 @@
     <bean class="net.$51zhiyuan.development.kidbridge.module.spring.KidbridgeRequestMappingHandlerAdapter">
         <property name="messageConverters">
             <list>
+                <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
                 <bean class="org.springframework.http.converter.StringHttpMessageConverter" />
                 <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                     <constructor-arg>

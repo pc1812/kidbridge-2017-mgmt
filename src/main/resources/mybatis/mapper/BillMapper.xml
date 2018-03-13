@@ -78,4 +78,57 @@
 
     </insert>
 
+    <resultMap id="detailListResultMap" type="java.util.HashMap">
+        <id property="bill_id" column="bill_id" />
+        <result property="bill_fee" column="bill_fee" />
+        <result property="bill_bill_type" column="bill_bill_type" />
+        <result property="bill_fee_type" column="bill_fee_type" />
+        <result property="bill_create_time" column="bill_create_time" />
+        <association property="user" javaType="java.util.HashMap">
+            <id property="user_id" column="user_id" />
+            <result property="user_nickname" column="user_nickname" />
+        </association>
+    </resultMap>
+
+    <select id="detailList" resultMap="detailListResultMap">
+        SELECT
+            `bill`.`id` AS `bill_id`,
+            `user`.`id` AS `user_id`,
+            `user`.`nickname` AS `user_nickname`,
+            `bill`.`fee` AS `bill_fee`,
+            CASE `bill`.`bill_type`
+                WHEN 0 THEN '绘本解锁'
+                WHEN 1 THEN '课程解锁'
+                WHEN 2 THEN 'H币充值-Android'
+                WHEN 3 THEN '打赏'
+                WHEN 4 THEN '被打赏'
+                WHEN 5 THEN 'H币兑换'
+                WHEN 6 THEN 'H币兑换'
+                WHEN 7 THEN '绘本跟读'
+                WHEN 8 THEN '课程跟读'
+                WHEN 9 THEN '系统赠送'
+                WHEN 10 THEN '系统扣除'
+                WHEN 11 THEN 'H币充值-iOS'
+            END AS `bill_bill_type`,
+            CASE `bill`.`fee_type`
+                WHEN 0 THEN 'H币'
+                WHEN 1 THEN '水滴'
+            END AS `bill_fee_type`,
+            `bill`.`create_time` AS `bill_create_time`
+        FROM
+            `t_bill` AS `bill`
+        LEFT JOIN
+            `t_user` AS `user` ON `user`.`id` = `bill`.`user_id`
+        WHERE
+            `bill`.`del_flag` = FALSE
+            <if test="beginDate != null and beginDate != ''">
+                AND DATE_FORMAT(`bill`.`create_time`,'%Y-%m-%d') &gt;= #{beginDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND DATE_FORMAT(`bill`.`create_time`,'%Y-%m-%d') &lt;= #{endDate}
+            </if>
+        ORDER BY
+            `bill`.`create_time` ASC
+    </select>
+
 </mapper>

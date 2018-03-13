@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.$51zhiyuan.development.kidbridge.dao.userCourseRepeat">
+
+    <resultMap id="detailListResultMap" type="UserCourseRepeat">
+        <id property="id" column="userCourseRepeat_id" />
+        <result property="createTime" column="userCourseRepeat_create_time" />
+        <association property="book" javaType="Book">
+            <id property="id" column="book_id" />
+            <result property="name" column="book_name" />
+        </association>
+        <association property="userCourse" javaType="UserCourse">
+            <association property="user" javaType="User">
+                <id property="id" column="user_id" />
+                <result property="nickname" column="user_nickname" />
+            </association>
+            <association property="course" javaType="Course">
+                <id property="id" column="course_id" />
+                <result property="name" column="course_name" />
+            </association>
+        </association>
+    </resultMap>
+
+    <select id="detailList" resultMap="detailListResultMap">
+        SELECT
+            `book`.`id` AS `book_id`,
+            `book`.`name` AS `book_name`,
+            `course`.`id` AS `course_id`,
+            `course`.`name` AS `course_name`,
+            `user`.`id` AS `user_id`,
+            `user`.`nickname` AS `user_nickname`,
+            `userCourseRepeat`.`id` AS `userCourseRepeat_id`,
+            `userCourseRepeat`.`create_time` AS `userCourseRepeat_create_time`
+        FROM
+            `t_user_course_repeat` AS `userCourseRepeat`
+        LEFT JOIN
+            `t_book` AS `book` ON `book`.`id` = `userCourseRepeat`.`book_id`
+        LEFT JOIN
+            `t_user_course` AS `userCourse` ON `userCourse`.`id` = `userCourseRepeat`.`user_course_id`
+        LEFT JOIN
+            `t_user` AS `user` ON `user`.`id` = `userCourse`.`user_id`
+        LEFT JOIN
+            `t_course` AS `course` ON `course`.`id` = `userCourse`.`course_id`
+        WHERE
+            `userCourseRepeat`.`del_flag` = FALSE
+            <if test="beginDate != null and beginDate != ''">
+                AND DATE_FORMAT(`userCourseRepeat`.`update_time`,'%Y-%m-%d') &gt;= #{beginDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND DATE_FORMAT(`userCourseRepeat`.`update_time`,'%Y-%m-%d') &lt;= #{endDate}
+            </if>
+        ORDER BY
+            `userCourseRepeat`.`update_time` ASC
+    </select>
+
+</mapper>

@@ -21,6 +21,9 @@
         <association property="courseHot" javaType="CourseHot">
             <id property="id" column="courseHot_id" />
         </association>
+        <collection property="userList" ofType="User">
+            <id property="id" column="user_id" />
+        </collection>
     </resultMap>
 
     <select id="list" resultMap="simpleResultMap">
@@ -38,13 +41,16 @@
             `course`.`price` AS `course_price`,
             `course`.`tag`AS `course_tag`,
             `courseHot`.`id` AS `courseHot_id`,
-            (SELECT COUNT(*) FROM `t_course_detail` AS `courseDetail` WHERE `courseDetail`.`del_flag` = FALSE AND `courseDetail`.`course_id` = `course`.`id` ) AS `book_count`
+            (SELECT COUNT(*) FROM `t_course_detail` AS `courseDetail` WHERE `courseDetail`.`del_flag` = FALSE AND `courseDetail`.`course_id` = `course`.`id` ) AS `book_count`,
+            `userCourse`.`user_id`
         FROM
             `t_course` AS `course`
         LEFT JOIN
 			(SELECT * FROM `t_teacher` AS `teacher` WHERE `teacher`.`del_flag` = FALSE) AS `teacher` ON `teacher`.`id` = `course`.`teacher_id`
 		LEFT JOIN
 			(SELECT * FROM `t_course_hot` AS `courseHot` WHERE `courseHot`.`del_flag` = FALSE) AS `courseHot` ON `courseHot`.`course_id` = `course`.`id`
+        LEFT JOIN
+            `t_user_course` AS `userCourse` ON `userCourse`.`course_id` = `course`.`id`
         WHERE
             `course`.`del_flag` = FALSE
             <if test="fit != null and fit != ''">

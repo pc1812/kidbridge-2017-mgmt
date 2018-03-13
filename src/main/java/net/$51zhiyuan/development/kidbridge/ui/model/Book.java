@@ -20,6 +20,7 @@ public class Book implements Serializable {
     private String outline;
     private String feeling;
     private String difficulty;
+    private String audio;
     private List tag;
     private Integer repeatActiveTime;
     private Boolean active;
@@ -109,6 +110,14 @@ public class Book implements Serializable {
         this.difficulty = difficulty;
     }
 
+    public String getAudio() {
+        return audio;
+    }
+
+    public void setAudio(String audio) {
+        this.audio = audio;
+    }
+
     public List getTag() {
         return tag;
     }
@@ -186,10 +195,12 @@ public class Book implements Serializable {
                 ", outline='" + outline + '\'' +
                 ", feeling='" + feeling + '\'' +
                 ", difficulty='" + difficulty + '\'' +
+                ", audio='" + audio + '\'' +
                 ", tag=" + tag +
                 ", repeatActiveTime=" + repeatActiveTime +
                 ", active=" + active +
                 ", bookSegmentList=" + bookSegmentList +
+                ", sort=" + sort +
                 ", delFlag=" + delFlag +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

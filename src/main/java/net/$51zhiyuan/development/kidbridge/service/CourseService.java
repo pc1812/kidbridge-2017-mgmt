@@ -105,7 +105,7 @@ public class CourseService {
             throw new KidbridgeSimpleException("未知的价格信息 ~");
         }
         try{
-            Double.parseDouble(param.get("price").toString());
+            Integer.parseInt(param.get("price").toString());
         }catch (Exception e){
             throw new KidbridgeSimpleException("非法的价格信息 ~");
         }
@@ -178,7 +178,7 @@ public class CourseService {
             throw new KidbridgeSimpleException("未知的价格信息 ~");
         }
         try{
-            Double.parseDouble(param.get("price").toString());
+            Integer.parseInt(param.get("price").toString());
         }catch (Exception e){
             throw new KidbridgeSimpleException("非法的价格信息 ~");
         }

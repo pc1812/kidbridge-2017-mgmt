@@ -25,6 +25,10 @@ public class TeacherService {
     @Autowired
     private SqlSessionTemplate sqlSessionTemplate;
 
+    public Boolean exist(Integer userId){
+        return ((int)this.sqlSessionTemplate.selectOne(this.namespace + "exist",userId)) > 0;
+    }
+
     public Map search(Integer page,String keyword){
         int show = 10;
         int currPage = page;
@@ -92,6 +96,9 @@ public class TeacherService {
         }
         if(((Map)param.get("user")).get("id") == null || StringUtils.isBlank(((Map)param.get("user")).get("id").toString())){
             throw new KidbridgeSimpleException("未知的用户编号 ~");
+        }
+        if(this.exist(Integer.valueOf(((Map)param.get("user")).get("id").toString()))){
+            throw new KidbridgeSimpleException("该用户教师身份已存在 ~");
         }
         if(param.get("realname") == null || StringUtils.isBlank(param.get("realname").toString())){
             throw new KidbridgeSimpleException("未知的教师姓名 ~");

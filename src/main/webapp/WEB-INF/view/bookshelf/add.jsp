@@ -114,6 +114,8 @@
                                                     <option value="0"${bookshelf.fit eq 0 ? " selected=\"selected\"" : "" }>3-5岁</option>
                                                     <option value="1"${bookshelf.fit eq 1 ? " selected=\"selected\"" : "" }>6-8岁</option>
                                                     <option value="2"${bookshelf.fit eq 2 ? " selected=\"selected\"" : "" }>9-12岁</option>
+                                                    <option value="3"${bookshelf.fit eq 3 ? " selected=\"selected\"" : "" }>4-7岁</option>
+                                                    <option value="4"${bookshelf.fit eq 4 ? " selected=\"selected\"" : "" }>8-10岁</option>
                                                 </select>
                                             </div>
                                         </div>

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -147,8 +148,11 @@ public class BookService {
         if(param.get("price") == null || StringUtils.isBlank(param.get("price").toString())){
             throw new KidbridgeSimpleException("未知的价格信息 ~");
         }
+        if(param.get("audio") == null || StringUtils.isBlank(param.get("audio").toString())){
+            throw new KidbridgeSimpleException("未知的音频信息 ~");
+        }
         try{
-            Double.parseDouble(param.get("price").toString());
+            Integer.parseInt(param.get("price").toString());
         }catch (Exception e){
             throw new KidbridgeSimpleException("非法的价格信息 ~");
         }
@@ -182,6 +186,24 @@ public class BookService {
         return ((int)this.sqlSessionTemplate.selectOne(this.namespace + "existBookInCourse",bookId) > 0);
     }
 
+    public void updatePrice(List<Integer> ids, String price){
+        if(ids == null || ids.size() == 0){
+            throw new KidbridgeSimpleException("未知的绘本信息 ~");
+        }
+        if(StringUtils.isBlank(price)){
+            throw new KidbridgeSimpleException("未知的价格信息 ~");
+        }
+        try{
+            Integer.parseInt(price);
+        }catch (Exception e){
+            throw new KidbridgeSimpleException("非法的价格信息 ~");
+        }
+        this.sqlSessionTemplate.update(this.namespace + "updatePrice",new HashMap(){{
+            this.put("ids",ids);
+            this.put("price",Integer.parseInt(price));
+        }});
+    }
+
     /**
      * 编辑绘本信息
      * @param param
@@ -197,6 +219,9 @@ public class BookService {
         if(param.get("sort") == null || StringUtils.isBlank(param.get("sort").toString())){
             throw new KidbridgeSimpleException("未知的排序信息 ~");
         }
+        if(param.get("audio") == null || StringUtils.isBlank(param.get("audio").toString())){
+            throw new KidbridgeSimpleException("未知的音频信息 ~");
+        }
         try {
             Integer.valueOf(param.get("sort").toString());
         }catch (Exception e){
@@ -210,7 +235,7 @@ public class BookService {
             throw new KidbridgeSimpleException("未知的价格信息 ~");
         }
         try{
-            Double.parseDouble(param.get("price").toString());
+            Integer.parseInt(param.get("price").toString());
         }catch (Exception e){
             throw new KidbridgeSimpleException("非法的价格信息 ~");
         }

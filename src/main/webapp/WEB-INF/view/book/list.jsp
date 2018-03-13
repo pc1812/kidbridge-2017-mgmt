@@ -14,6 +14,7 @@
     <link href="/resources/css/animate.css" rel="stylesheet">
     <link href="/resources/css/style.css" rel="stylesheet">
     <link href="/resources/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/resources/css/plugins/iCheck/custom.css" rel="stylesheet">
     <link href="/resources/css/service/base.css" rel="stylesheet">
 </head>
 <body>
@@ -24,11 +25,31 @@
     <div id="page-wrapper" class="gray-bg">
         <div class="row border-bottom">
             <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
-                <div class="navbar-header" style="margin-bottom: 10px;">
-                    <a class="minimalize-styl-2 btn btn-primary " href="javascript:"><i class="fa fa-search"></i> </a>
-                    <form role="search" class="navbar-form-custom" method="get" action="/book/list" style="width: 250px;">
-                        <div class="form-group">
+                <div class="navbar-header" style="margin: 10px 24px;">
+                    <%--<a class="minimalize-styl-2 btn btn-primary " href="javascript:"><i class="fa fa-search"></i> </a>--%>
+                    <%--<form role="search" class="navbar-form-custom" method="get" action="/book/list" style="width: 250px;">--%>
+                        <%--<div class="form-group">--%>
+                            <%--<input type="text" placeholder="输入绘本编号或名称进行检索" value="${param.keyword }" class="form-control" name="keyword" id="top-search">--%>
+                        <%--</div>--%>
+                    <%--</form>--%>
+
+
+                    <form method="get" action="/book/list">
+                        <div class="input-group" style="width: 500px;float: left;">
+                            <span class="input-group-addon">绘本关键词</span>
                             <input type="text" placeholder="输入绘本编号或名称进行检索" value="${param.keyword }" class="form-control" name="keyword" id="top-search">
+                        </div>
+                        <div class="input-group" style="width: 200px;float: left;margin-left: 20px;">
+                            <span class="input-group-addon">价格区间</span>
+                            <input type="text" placeholder="最低价格" value="${param.minimum }" class="form-control" name="minimum" style="width: 100px;">
+                            <span class="input-group-addon">-</span>
+                            <input type="text" placeholder="最高价格" value="${param.maximum }" class="form-control" name="maximum" style="width: 100px;">
+                            <span class="input-group-addon">元</span>
+                        </div>
+                        <div class="btn-search" style="float: left;margin-left: 20px;">
+                            <button type="submit" class="btn btn-xs btn-primary" style="height: 34px;width: 34px;">
+                                <i class="fa fa-search"></i>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -57,6 +78,12 @@
                                     <li>
                                         <a href="/book/list?fit=2" class="${param.fit eq '2' ? "filter-select" : "" }">9-12岁</a>
                                     </li>
+                                    <li>
+                                        <a href="/book/list?fit=3" class="${param.fit eq '3' ? "filter-select" : "" }">4-7岁</a>
+                                    </li>
+                                    <li>
+                                        <a href="/book/list?fit=4" class="${param.fit eq '4' ? "filter-select" : "" }">8-10岁</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -65,6 +92,9 @@
                             <table class="table table-striped">
                                 <thead>
                                 <tr>
+                                    <th>
+                                        <input type="checkbox" class="icheck" id="book-select-all">
+                                    </th>
                                     <th>编号</th>
                                     <th>标题</th>
                                     <th>价格</th>
@@ -77,10 +107,13 @@
                                     <c:choose>
                                         <c:when test="${not empty bookList }">
                                             <c:forEach items="${bookList }" var="book">
-                                                <tr>
+                                                <tr style="color: ${empty book.audio ? "red" : "black" };">
+                                                    <td>
+                                                        <input type="checkbox" data-id="${book.id }" class="icheck book-select">
+                                                    </td>
                                                     <td>${book.id }</td>
                                                     <td>${book.name }</td>
-                                                    <td>${book.price }元</td>
+                                                    <td>${book.price }</td>
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${book.fit eq '0' }">
@@ -91,6 +124,12 @@
                                                             </c:when>
                                                             <c:when test="${book.fit eq '2' }">
                                                                 9-12岁
+                                                            </c:when>
+                                                            <c:when test="${book.fit eq '3' }">
+                                                                4-7岁
+                                                            </c:when>
+                                                            <c:when test="${book.fit eq '4' }">
+                                                                8-10岁
                                                             </c:when>
                                                         </c:choose>
                                                     </td>
@@ -107,15 +146,18 @@
                                         </c:when>
                                         <c:otherwise>
                                             <tr>
-                                                <td colspan="6">暂无数据 ~</td>
+                                                <td colspan="7">暂无数据 ~</td>
                                             </tr>
                                         </c:otherwise>
                                     </c:choose>
                                 </tbody>
                             </table>
                             <div style="height: 35px;">
-                                <div style="float: left;">
+                                <%--<div style="float: left;">
                                     <button type="button" class="btn btn-primary" data-type="0" data-toggle="modal" data-target="#export" data-backdrop="static">导出</button>
+                                </div>--%>
+                                <div style="float: left;">
+                                    <button id="batch-update-price" disabled="disabled" type="button" class="btn btn-primary" data-toggle="modal" data-target="#book-price" data-backdrop="static">批量改价</button>
                                 </div>
                                 <div style="float: right; display: ${page.numberList.size() == 0 ? "none" : "block" }">
                                     <ul class="pagination">
@@ -130,10 +172,10 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <li>
-                                                    <a href="/book/list/?keyword=${param.keyword }&page=${page.min }" aria-label="Previous"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a>
+                                                    <a href="/book/list/?keyword=${param.keyword }&minimum=${param.minimum }&maximum=${param.maximum }&page=${page.min }" aria-label="Previous"><i class="fa fa-angle-double-left" aria-hidden="true"></i></a>
                                                 </li>
                                                 <li>
-                                                    <a href="/book/list/?keyword=${param.keyword }&page=${param.page - 1 }" aria-label="Previous"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
+                                                    <a href="/book/list/?keyword=${param.keyword }&minimum=${param.minimum }&maximum=${param.maximum }&page=${param.page - 1 }" aria-label="Previous"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
                                                 </li>
                                             </c:otherwise>
                                         </c:choose>
@@ -149,7 +191,7 @@
                                                 </c:when>
                                                 <c:otherwise>
                                                     <li>
-                                                        <a href="/book/list/?keyword=${param.keyword }&page=${number }">
+                                                        <a href="/book/list/?keyword=${param.keyword }&minimum=${param.minimum }&maximum=${param.maximum }&page=${number }">
                                                                 ${number }
                                                         </a>
                                                     </li>
@@ -168,14 +210,34 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <li>
-                                                    <a href="/book/list/?keyword=${param.keyword }&page=${empty param.page ? param.page + 1 + 1 : param.page + 1 }" aria-label="Next"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                                                    <a href="/book/list/?keyword=${param.keyword }&minimum=${param.minimum }&maximum=${param.maximum }&page=${empty param.page ? param.page + 1 + 1 : param.page + 1 }" aria-label="Next"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
                                                 </li>
                                                 <li>
-                                                    <a href="/book/list/?keyword=${param.keyword }&page=${page.max }" aria-label="Next"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
+                                                    <a href="/book/list/?keyword=${param.keyword }&minimum=${param.minimum }&maximum=${param.maximum }&page=${page.max }" aria-label="Next"><i class="fa fa-angle-double-right" aria-hidden="true"></i></a>
                                                 </li>
                                             </c:otherwise>
                                         </c:choose>
                                     </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="book-price" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title">批量修改绘本价格</h4>
+                                    </div>
+                                    <div class="modal-body" style="padding-bottom: 10px;">
+                                        <div class="input-group" style="margin-bottom: 10px;">
+                                            <span class="input-group-addon">绘本价格</span>
+                                            <input id="input-update-book-price" type="text" class="form-control" placeholder="请输入修改后的绘本价格">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-bottom: 0;">关闭</button>
+                                        <button type="button" class="btn btn-primary btn-update-book-price">保存</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -196,10 +258,63 @@
 <script src="/resources/js/inspinia.js"></script>
 <script src="/resources/js/plugins/pace/pace.min.js"></script>
 <script src="/resources/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="/resources/js/plugins/iCheck/icheck.min.js"></script>
 <script src="/resources/js/service/base.js"></script>
 <script>
+    $('#book-price').on('show.bs.modal', function (e) {
+        $("#input-update-book-price").val("");
+    });
+    $(".btn-update-book-price").on("click",function () {
+        var ids = [];
+        $(".book-select:checked").each(function () {
+            ids.push($(this).data("id"));
+        });
+        var price = $("#input-update-book-price").val();
+        $.ajax({
+            type:"POST",
+            url:"/book/update/price",
+            async: false,
+            data:JSON.stringify({"ids":ids,"price":price}),
+            dataType:"json",
+            contentType:"application/json",
+            success: function(resp){
+                if(!resp.success){
+                    swal({
+                        title: "错误提示",
+                        text: resp.message,
+                        type: "error",
+                        cancelButtonText: "关闭",
+                        showCancelButton: true,
+                        showConfirmButton: false
+                    });
+                    return;
+                }
+                window.location.reload();
+            }
+        });
+    });
+    $(".icheck").iCheck({
+        checkboxClass: 'icheckbox_square-green',
+        radioClass: 'iradio_square-green'
+    });
+    $("#book-select-all").on("ifClicked",function () {
+        var state = !$(this).is(':checked');
+        $(".book-select").iCheck(state ? 'check' : 'uncheck');
+    });
+    $(".book-select").on("ifChanged",function (e) {
+        if($(".book-select:checked").length > 0){
+            $("#batch-update-price").attr("disabled",false);
+        }else{
+            $("#batch-update-price").attr("disabled",true);
+        }
+        if($(".book-select:checked").length == $('.book-select').length){
+            $("#book-select-all").iCheck('check');
+        }else{
+            $("#book-select-all").iCheck('uncheck');
+        }
+    });
     $(".book-del").on("click",function () {
-       var id = $(this).data("id");
+        var id = $(this).data("id");
         $.ajax({
             type:"POST",
             url:"/book/del",

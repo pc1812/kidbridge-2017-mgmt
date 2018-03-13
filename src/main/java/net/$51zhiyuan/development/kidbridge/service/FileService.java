@@ -202,6 +202,7 @@ public class FileService {
         Matcher segmentText = Pattern.compile("\\d+，([\\s\\S]*?)\\n\\n").matcher(bookWordsBody);
         List segmentList = new ArrayList();
 
+        String completeAudio = this.upload(bookAudio.get(0));
 
         for(int i = 0;(segmentText.find());i++){
             BookSegment segment = new BookSegment();
@@ -213,6 +214,7 @@ public class FileService {
         List icon = new ArrayList();
         icon.add(this.upload(bookImage.get(0)));
         book.setIcon(icon);
+        book.setAudio(completeAudio);
         book.setBookSegmentList(segmentList);
         decompressionPath.deleteOnExit();
         return book;

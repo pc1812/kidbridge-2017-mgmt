@@ -141,7 +141,7 @@ public class UserService {
             @Override
             public Map getOption() {
                 return new HashMap(){{
-                    this.put("manager",manager.getId());
+                    this.put("manager",manager == null ? -1 : manager.getId());
                 }};
             }
 

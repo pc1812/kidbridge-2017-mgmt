@@ -53,6 +53,14 @@
             height: 7px;
             width: 7px;
         }
+        table {
+            table-layout:fixed;
+        }
+        table tr td {
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+        }
     </style>
 </head>
 <body>
@@ -72,7 +80,7 @@
                             <table class="table table-striped whirligig">
                                 <thead>
                                 <tr>
-                                    <th>编号</th>
+                                    <th width="100">编号</th>
                                     <th>图片</th>
                                     <th>跳转链接</th>
                                     <th>添加时间</th>
@@ -84,7 +92,7 @@
                                     <c:when test="${not empty whirligigList }">
                                         <c:forEach items="${whirligigList }" var="whirligig">
                                             <tr>
-                                                <td>${whirligig.id }</td>
+                                                <td width="100">${whirligig.id }</td>
                                                 <td>
                                                     <img class="img-responsive center-block img-rounded" src="http://res.kidbridge.org/${whirligig.icon }"/>
                                                 </td>

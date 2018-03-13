@@ -367,7 +367,7 @@
                         html += "<tr>";
                         html += "<td>"+user.id+"</td>";
                         html += "<td>"+user.phone+"</td>";
-                        html += "<td>"+(user.nickname.trim() == "" ? "未知" : user.nickname )+"</td>";
+                        html += "<td>"+(user.nickname.trim() == "" ? "未知" : (user.nickname.length > 9 ? (user.nickname.substring(0,9) + "...") : user.nickname) )+"</td>";
                         html += "<td>"+moment(user.createTime).format("YYYY-MM-DD HH:mm:ss")+"</td>";
                         html += "<td><a data-id=\""+user.id+"\" href=\"javascript:;\">添加</a></td>";
                         html += "</tr>";

@@ -20,7 +20,7 @@
                     IN-
                 </div>
             </li>
-            <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/user/") ? " class=\"active\"" : ""}>
+            <li${fn:indexOf(requestScope["javax.servlet.forward.servlet_path"].toString(), "/user/") == 0 ? " class=\"active\"" : ""}>
                 <a href="javascript:">
                     <i class="fa fa-user-circle-o"></i>
                     <span class="nav-label">用户管理</span>
@@ -30,7 +30,7 @@
                     <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/user/list") ? " class=\"active\"" : "" }><a href="/user/list"><i class="fa fa-list"></i>用户列表</a></li>
                 </ul>
             </li>
-            <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/teacher/") ? " class=\"active\"" : ""}>
+            <li${fn:indexOf(requestScope["javax.servlet.forward.servlet_path"].toString(), "/teacher/") == 0 ? " class=\"active\"" : ""}>
                 <a href="javascript:">
                     <i class="fa fa-user-circle-o"></i>
                     <span class="nav-label">教师管理</span>
@@ -40,7 +40,7 @@
                     <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/teacher/list") ? " class=\"active\"" : "" }><a href="/teacher/list"><i class="fa fa-list"></i>教师列表</a></li>
                 </ul>
             </li>
-            <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/book/") ? " class=\"active\"" : ""}>
+            <li${fn:indexOf(requestScope["javax.servlet.forward.servlet_path"].toString(), "/book/") == 0 ? " class=\"active\"" : ""}>
                 <a href="javascript:">
                     <i class="fa fa-book"></i>
                     <span class="nav-label">绘本管理</span>
@@ -60,7 +60,7 @@
                     </c:if>
                 </ul>
             </li>
-            <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/course/") ? " class=\"active\"" : ""}>
+            <li${fn:indexOf(requestScope["javax.servlet.forward.servlet_path"].toString(), "/course/") == 0 ? " class=\"active\"" : ""}>
                 <a href="javascript:">
                     <i class="fa fa-book"></i>
                     <span class="nav-label">课程管理</span>
@@ -80,7 +80,7 @@
                     </c:if>
                 </ul>
             </li>
-            <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/bookshelf/") ? " class=\"active\"" : ""}>
+            <li${fn:indexOf(requestScope["javax.servlet.forward.servlet_path"].toString(), "/bookshelf/") == 0 ? " class=\"active\"" : ""}>
                 <a href="javascript:">
                     <i class="fa fa-book"></i>
                     <span class="nav-label">书单管理</span>
@@ -100,7 +100,7 @@
                     </c:if>
                 </ul>
             </li>
-            <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/article/") ? " class=\"active\"" : ""}>
+            <li${fn:indexOf(requestScope["javax.servlet.forward.servlet_path"].toString(), "/article/") == 0 ? " class=\"active\"" : ""}>
                 <a href="javascript:">
                     <i class="fa fa-book"></i>
                     <span class="nav-label">文章管理</span>
@@ -116,25 +116,51 @@
                     </c:if>
                 </ul>
             </li>
-            <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/whirligig/") ? " class=\"active\"" : ""}>
+            <li${fn:indexOf(requestScope["javax.servlet.forward.servlet_path"].toString(), "/data/") == 0 ? " class=\"active\"" : ""}>
+                <a href="javascript:">
+                    <i class="fa fa-book"></i>
+                    <span class="nav-label">数据管理</span>
+                    <span class="fa arrow"></span>
+                </a>
+                <ul class="nav nav-second-level collapse">
+                    <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/data/book/sign/detail/list") ? " class=\"active\"" : "" }><a href="/data/book/sign/detail/list"><i class="fa fa-list"></i>绘本跟读明细</a></li>
+
+                    <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/data/course/sign/detail/list") ? " class=\"active\"" : "" }><a href="/data/course/sign/detail/list"><i class="fa fa-list"></i>课程跟读明细</a></li>
+
+                    <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/data/user/bill/detail/list") ? " class=\"active\"" : "" }><a href="/data/user/bill/detail/list"><i class="fa fa-list"></i>用户余额明细</a></li>
+                </ul>
+            </li>
+            <li${fn:indexOf(requestScope["javax.servlet.forward.servlet_path"].toString(), "/whirligig/") == 0 ? " class=\"active\"" : ""}>
                 <a href="/whirligig/list">
                     <i class="fa fa-book"></i>
                     <span class="nav-label">首页轮播</span>
                 </a>
             </li>
-            <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/feedback/") ? " class=\"active\"" : ""}>
+            <li${fn:indexOf(requestScope["javax.servlet.forward.servlet_path"].toString(), "/medal/") == 0 ? " class=\"active\"" : ""}>
+                <a href="/medal/list">
+                    <i class="fa fa-book"></i>
+                    <span class="nav-label">勋章管理</span>
+                </a>
+            </li>
+            <li${fn:indexOf(requestScope["javax.servlet.forward.servlet_path"].toString(), "/feedback/") == 0 ? " class=\"active\"" : ""}>
                 <a href="/feedback/list">
                     <i class="fa fa-book"></i>
                     <span class="nav-label">意见反馈</span>
                 </a>
             </li>
-            <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/version/") ? " class=\"active\"" : ""}>
+            <li${fn:indexOf(requestScope["javax.servlet.forward.servlet_path"].toString(), "/searchrecord/") == 0 ? " class=\"active\"" : ""}>
+                <a href="/searchrecord/list">
+                    <i class="fa fa-book"></i>
+                    <span class="nav-label">搜索记录</span>
+                </a>
+            </li>
+            <li${fn:indexOf(requestScope["javax.servlet.forward.servlet_path"].toString(), "/version/") == 0 ? " class=\"active\"" : ""}>
                 <a href="/version/list">
                     <i class="fa fa-gear"></i>
                     <span class="nav-label">版本管理</span>
                 </a>
             </li>
-            <li${fn:contains(requestScope["javax.servlet.forward.servlet_path"].toString(), "/setting/") ? " class=\"active\"" : ""}>
+            <li${fn:indexOf(requestScope["javax.servlet.forward.servlet_path"].toString(), "/setting/") == 0 ? " class=\"active\"" : ""}>
                 <a href="/setting/list">
                     <i class="fa fa-gear"></i>
                     <span class="nav-label">系统设置</span>

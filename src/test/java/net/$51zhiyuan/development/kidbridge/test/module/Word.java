@@ -33,6 +33,12 @@ public class Word {
     }
 
     @Test
+    public void x(){
+        System.out.println(Integer.parseInt("1.3"));
+
+    }
+
+    @Test
     public void reg(){
         String str = "啊啊啊啊啊\n是是是是\n故事梗概\n水电费水电费";
         Matcher matcher = Pattern.compile("(\n.*)").matcher(str);

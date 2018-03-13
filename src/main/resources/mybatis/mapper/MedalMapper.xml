@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.$51zhiyuan.development.kidbridge.dao.medal">
+
+    <resultMap id="simpleResultMap" type="Medal">
+        <result property="icon" column="icon" typeHandler="net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler" />
+    </resultMap>
+
+    <select id="get" parameterType="java.lang.Integer" resultMap="simpleResultMap">
+        SELECT
+            `medal`.`id`,
+            `medal`.`name`,
+            `medal`.`icon`,
+            `medal`.`bonus`,
+            `medal`.`del_flag`,
+            `medal`.`create_time`,
+            `medal`.`update_time`
+        FROM
+            `t_medal` AS `medal`
+        WHERE
+            `medal`.`del_flag` = FALSE
+            AND `medal`.`id` = #{_parameter}
+    </select>
+
+    <insert id="add">
+        INSERT INTO `t_medal`(
+            `name`,
+            `icon`,
+            `bonus`
+        )VALUES(
+            #{name},
+            #{icon,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler},
+            #{bonus}
+        )
+    </insert>
+
+    <update id="edit">
+        UPDATE `t_medal`
+        <set>
+            <if test="name != null">
+                `name` = #{name},
+            </if>
+            <if test="icon != null">
+                `icon` = #{icon,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler},
+            </if>
+            <if test="bonus != null">
+                `bonus` = #{bonus},
+            </if>
+            <if test="delFlag != null">
+                `del_flag` = #{delFlag},
+            </if>
+        </set>
+        WHERE
+            `id` = #{id}
+    </update>
+
+    <!--勋章列表-->
+    <select id="list" resultMap="simpleResultMap">
+        SELECT
+            `medal`.`id`,
+            `medal`.`name`,
+            `medal`.`icon`,
+            `medal`.`bonus`
+        FROM
+            `t_medal` AS `medal`
+        WHERE
+            `medal`.`del_flag` = FALSE
+        ORDER BY
+            `medal`.`create_time` DESC
+    </select>
+
+</mapper>

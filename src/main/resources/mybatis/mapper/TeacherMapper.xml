@@ -50,4 +50,14 @@
         WHERE `id` = #{id}
     </update>
 
+    <select id="exist" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT
+            COUNT(*)
+        FROM
+            t_teacher AS teacher
+        WHERE
+            teacher.del_flag = FALSE
+            AND teacher.user_id = #{_parameter}
+    </select>
+
 </mapper>

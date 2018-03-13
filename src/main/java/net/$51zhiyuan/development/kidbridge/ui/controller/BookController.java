@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,10 +28,12 @@ public class BookController {
     private BookService bookService;
 
     @RequestMapping("/list")
-    Object list(String page, String fit,String keyword){
+    Object list(String page, String fit,String keyword,String minimum,String maximum){
         ModelAndView view = new ModelAndView();
         Map map = this.bookService.list(new HashMap(){{
             this.put("keyword",keyword);
+            this.put("minimum",minimum);
+            this.put("maximum",maximum);
             this.put("fit",fit);
             this.put("page",page);
         }});
@@ -90,6 +93,29 @@ public class BookController {
         Map response = new HashMap();
         try{
             this.bookService.add(param);
+            success = true;
+        }catch (KidbridgeSimpleException k){
+            message = k.getMessage();
+            this.logger.debug(k.getMessage(),k);
+        }catch (Exception e){
+            message = "系统繁忙，请稍后再试 ~";
+            this.logger.error(e.getMessage(),e);
+        }
+        response.put("success",success);
+        response.put("message",message);
+        response.put("data",data);
+        return response;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/update/price",method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
+    Object update_price(@RequestBody Map param){
+        boolean success = false;
+        String message = "";
+        Object data = new ArrayList();
+        Map response = new HashMap();
+        try{
+            this.bookService.updatePrice((List<Integer>) param.get("ids"),(String) param.get("price"));
             success = true;
         }catch (KidbridgeSimpleException k){
             message = k.getMessage();

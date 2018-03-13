@@ -65,6 +65,12 @@
                                                     <c:when test="${bookshelf.fit eq '2' }">
                                                         9-12岁
                                                     </c:when>
+                                                    <c:when test="${bookshelf.fit eq '3' }">
+                                                        4-7岁
+                                                    </c:when>
+                                                    <c:when test="${bookshelf.fit eq '4' }">
+                                                        8-10岁
+                                                    </c:when>
                                                 </c:choose>
                                             </div>
                                         </div>

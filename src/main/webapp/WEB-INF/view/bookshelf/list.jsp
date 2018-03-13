@@ -46,6 +46,12 @@
                                     <li>
                                         <a href="/bookshelf/list?fit=2" class="${param.fit eq '2' ? "filter-select" : "" }">9-12岁</a>
                                     </li>
+                                    <li>
+                                        <a href="/bookshelf/list?fit=3" class="${param.fit eq '2' ? "filter-select" : "" }">4-7岁</a>
+                                    </li>
+                                    <li>
+                                        <a href="/bookshelf/list?fit=4" class="${param.fit eq '2' ? "filter-select" : "" }">8-10岁</a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -78,6 +84,12 @@
                                                         </c:when>
                                                         <c:when test="${bookshelf.fit eq '2' }">
                                                             9-12岁
+                                                        </c:when>
+                                                        <c:when test="${bookshelf.fit eq '3' }">
+                                                            4-7岁
+                                                        </c:when>
+                                                        <c:when test="${bookshelf.fit eq '4' }">
+                                                            8-10岁
                                                         </c:when>
                                                     </c:choose>
                                                 </td>

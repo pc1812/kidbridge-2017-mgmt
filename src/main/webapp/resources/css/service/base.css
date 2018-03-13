@@ -21,7 +21,7 @@ pre {
     text-align: center;
     width: 100%;
 }
-.book-add-icon:hover,.course-add-icon:hover,.bookshelf-add-icon:hover,.whirligig-add-icon:hover {
+.book-add-icon:hover,.course-add-icon:hover,.bookshelf-add-icon:hover,.whirligig-add-icon:hover,.medal-add-icon:hover {
     cursor: pointer;
 }
 .book-icon, .course-icon,.bookshelf-icon {
@@ -70,7 +70,6 @@ pre {
     margin-top: 10px;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
-    padding-bottom: 5px;
 }
 .book-segment-audio button {
     margin-left: 5px;
@@ -308,6 +307,12 @@ pre {
 .whirligig-add-icon {
     font-size: 40px;
     line-height: 298px;
+    text-align: center;
+    width: 100%;
+}
+.medal-add-icon {
+    font-size: 40px;
+    line-height: 120px;
     text-align: center;
     width: 100%;
 }

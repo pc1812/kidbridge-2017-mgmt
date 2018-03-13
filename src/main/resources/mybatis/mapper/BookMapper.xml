@@ -12,6 +12,7 @@
         <result property="feeling" column="book_feeling" />
         <result property="tag" column="book_tag" typeHandler="net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler" />
         <result property="richText" column="book_rich_text" />
+        <result property="audio" column="book_audio" />
         <result property="sort" column="book_sort" />
         <result property="repeatActiveTime" column="book_repeat_active_time" />
         <result property="active" column="book_active" />
@@ -42,6 +43,7 @@
             `book`.`outline` AS `book_outline`,
             `book`.`feeling` AS `book_feeling`,
             `book`.`tag` AS `book_tag`,
+            `book`.`audio` AS `book_audio`,
             `book`.`rich_text` AS `book_rich_text`,
             `book`.`repeat_active_time` AS `book_repeat_active_time`,
             `book`.`active` AS `book_active`,
@@ -70,7 +72,8 @@
             `book`.`icon`,
             `book`.`price`,
             `book`.`fit`,
-            `book`.`tag`
+            `book`.`tag`,
+            `book`.`audio`
         FROM
             `t_book` AS `book`
         WHERE
@@ -84,10 +87,27 @@
             <if test="keyword != null and keyword != ''">
                 AND (`book`.`id` LIKE CONCAT('%',#{keyword},'%') OR `book`.`name` LIKE CONCAT('%',#{keyword},'%') OR `book`.`tag` LIKE CONCAT('%',#{keyword},'%'))
             </if>
+            <if test="minimum != null and minimum != ''">
+                AND `book`.`price` &gt;= #{minimum}
+            </if>
+            <if test="maximum != null and maximum != ''">
+                AND `book`.`price` &lt;= #{maximum}
+            </if>
         ORDER BY
             `book`.`sort` DESC,
             `book`.`create_time` DESC
     </select>
+
+    <update id="updatePrice">
+        UPDATE `t_book`
+        SET
+            `price` = #{price}
+        WHERE
+            `id` IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 
     <select id="getSegment" resultType="BookSegment">
         SELECT
@@ -115,6 +135,7 @@
             `repeat_active_time`,
             `active`,
             `rich_text`,
+            `audio`,
             `sort`
         )VALUES(
             #{name},
@@ -127,6 +148,7 @@
             #{repeatActiveTime},
             #{active},
             #{richtext},
+            #{audio},
             #{sort}
         )
     </insert>
@@ -144,6 +166,7 @@
             `repeat_active_time` = #{repeatActiveTime},
             `active` = #{active},
             `rich_text` = #{richtext},
+            `audio` = #{audio},
             `sort` = #{sort}
         WHERE `id` = #{id}
     </update>

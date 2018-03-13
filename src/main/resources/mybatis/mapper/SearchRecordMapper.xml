@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.$51zhiyuan.development.kidbridge.dao.searchRecord">
+
+    <select id="list" resultType="SearchRecord">
+        SELECT
+            `searchRecord`.`id`,
+            `searchRecord`.`keyword`,
+            `searchRecord`.`del_flag`,
+            `searchRecord`.`create_time`,
+            `searchRecord`.`update_time`,
+            `user`.`id` AS `user.id`,
+            `user`.`nickname` AS `user.nickname`
+        FROM
+            `t_search_record` AS `searchRecord`
+		LEFT JOIN
+			`t_user` AS `user` ON `user`.`id` = `searchRecord`.`user_id`
+        WHERE
+            `searchRecord`.`del_flag` = FALSE
+        ORDER BY
+            `searchRecord`.`create_time` DESC
+    </select>
+
+
+    <insert id="add">
+        INSERT INTO `t_search_record`(
+            `user_id`,
+            `keyword`
+        )VALUES(
+            #{user.id},
+            #{keyword}
+        )
+    </insert>
+
+
+</mapper>

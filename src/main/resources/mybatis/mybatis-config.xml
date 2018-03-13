@@ -51,6 +51,12 @@
         <mapper resource="mybatis/mapper/AuthMapper.xml"/>
         <mapper resource="mybatis/mapper/ConfigMapper.xml"/>
         <mapper resource="mybatis/mapper/VersionMapper.xml"/>
+        <mapper resource="mybatis/mapper/MedalMapper.xml"/>
+        <mapper resource="mybatis/mapper/SearchRecordMapper.xml"/>
+        <mapper resource="mybatis/mapper/UserCourseMapper.xml"/>
+        <mapper resource="mybatis/mapper/UserBookRepeatMapper.xml"/>
+        <mapper resource="mybatis/mapper/UserCourseRepeatMapper.xml"/>
+
     </mappers>
 
 </configuration>

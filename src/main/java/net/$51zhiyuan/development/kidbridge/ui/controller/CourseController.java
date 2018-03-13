@@ -2,7 +2,10 @@ package net.$51zhiyuan.development.kidbridge.ui.controller;
 
 import net.$51zhiyuan.development.kidbridge.exception.KidbridgeSimpleException;
 import net.$51zhiyuan.development.kidbridge.service.CourseService;
+import net.$51zhiyuan.development.kidbridge.service.UserCourseService;
 import net.$51zhiyuan.development.kidbridge.ui.model.Course;
+import net.$51zhiyuan.development.kidbridge.ui.model.Message;
+import net.$51zhiyuan.development.kidbridge.ui.model.MessageType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,9 @@ public class CourseController {
 
     @Autowired
     private CourseService courseService;
+
+    @Autowired
+    private UserCourseService userCourseService;
 
     @RequestMapping("/list")
     Object list(String page,String fit,String keyword){
@@ -56,6 +62,35 @@ public class CourseController {
         try{
             this.courseService.add(param);
             success = true;
+        }catch (KidbridgeSimpleException k){
+            message = k.getMessage();
+            this.logger.debug(k.getMessage(),k);
+        }catch (Exception e){
+            message = "系统繁忙，请稍后再试 ~";
+            this.logger.error(e.getMessage(),e);
+        }
+        response.put("success",success);
+        response.put("message",message);
+        response.put("data",data);
+        return response;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/enter", method = RequestMethod.POST ,produces = MediaType.APPLICATION_JSON_VALUE)
+    Object enter(@RequestBody Map param){
+        boolean success = false;
+        String message = "";
+        Object data = new ArrayList();
+        Map response = new HashMap();
+        try{
+            boolean exist = this.userCourseService.exist((int)param.get("userId"),(int)param.get("courseId"));
+            if(exist){
+                message = "该课程的报名用户已存在";
+            }else{
+                this.userCourseService.add((int)param.get("userId"),(int)param.get("courseId"));
+                success = true;
+            }
+
         }catch (KidbridgeSimpleException k){
             message = k.getMessage();
             this.logger.debug(k.getMessage(),k);

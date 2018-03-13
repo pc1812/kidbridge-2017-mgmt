@@ -85,6 +85,12 @@
                                                     <c:when test="${book.fit eq '2' }">
                                                         9-12岁
                                                     </c:when>
+                                                    <c:when test="${book.fit eq '3' }">
+                                                        4-7岁
+                                                    </c:when>
+                                                    <c:when test="${book.fit eq '4' }">
+                                                        8-10岁
+                                                    </c:when>
                                                 </c:choose>
                                             </div>
                                         </div>
@@ -102,6 +108,14 @@
                                             <div class="panel-heading">关键词</div>
                                             <div class="panel-body">
                                                 ${fn:join(book.tag.toArray(), ", ") }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="book-audio">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">完整音频</div>
+                                            <div class="panel-body" style="padding: 0px;font-size: 30px;text-align: center;">
+                                                <a href="http://res.kidbridge.org/${book.audio }" target="_blank"><i class="fa fa-play-circle"></i></a>
                                             </div>
                                         </div>
                                     </div>
