@@ -66,7 +66,7 @@ public class MedalService {
      * @return
      */
     public Map list(Map param){
-        int show = 20;
+        int show = 10;
         int currPage = (param.get("page") == null || StringUtils.isBlank(param.get("page").toString())) ? 1 : Integer.parseInt(param.get("page").toString());
         int maxLabel = 9;
         int z = (maxLabel / 2 + 1);
