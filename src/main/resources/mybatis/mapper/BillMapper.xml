@@ -87,6 +87,10 @@
         <association property="user" javaType="java.util.HashMap">
             <id property="user_id" column="user_id" />
             <result property="user_nickname" column="user_nickname" />
+            <result property="user_receiving_contact" column="user_receiving_contact" />
+            <result property="user_receiving_phone" column="user_receiving_phone" />
+            <result property="user_receiving_region" column="user_receiving_region" />
+            <result property="user_receiving_street" column="user_receiving_street" />
         </association>
     </resultMap>
 
@@ -95,6 +99,11 @@
             `bill`.`id` AS `bill_id`,
             `user`.`id` AS `user_id`,
             `user`.`nickname` AS `user_nickname`,
+            `user`.`phone` AS `user_phone`,
+            `user`.`receiving_contact` AS `user_receiving_contact`,
+            `user`.`receiving_phone` AS `user_receiving_phone`,
+            `user`.`receiving_region` AS `user_receiving_region`,
+            `user`.`receiving_street` AS `user_receiving_street`,
             `bill`.`fee` AS `bill_fee`,
             CASE `bill`.`bill_type`
                 WHEN 0 THEN '绘本解锁'

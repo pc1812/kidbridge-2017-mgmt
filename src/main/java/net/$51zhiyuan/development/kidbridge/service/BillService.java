@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageRowBounds;
 import net.$51zhiyuan.development.kidbridge.ui.model.*;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -136,10 +137,11 @@ public class BillService {
         xssfSheet.setColumnWidth(0, 10*256);
         xssfSheet.setColumnWidth(1, 10*256);
         xssfSheet.setColumnWidth(2, 50*256);
-        xssfSheet.setColumnWidth(3, 10*256);
+        xssfSheet.setColumnWidth(3, 70*256);
         xssfSheet.setColumnWidth(4, 10*256);
-        xssfSheet.setColumnWidth(5, 20*256);
+        xssfSheet.setColumnWidth(5, 10*256);
         xssfSheet.setColumnWidth(6, 20*256);
+        xssfSheet.setColumnWidth(7, 20*256);
         xssfSheet.setDefaultRowHeightInPoints(20);
         //header.setHeightInPoints(23);// 设置行高23像素
         XSSFCellStyle xssfCellStyleHeader = xssfWorkbook.createCellStyle();// 创建样式对象
@@ -174,16 +176,19 @@ public class BillService {
         XSSFCell headerCourseId = xssfRowHeader.createCell(2);
         headerCourseId.setCellValue("用户昵称");
         headerCourseId.setCellStyle(xssfCellStyleHeader);
-        XSSFCell headerCourseName = xssfRowHeader.createCell(3);
+        XSSFCell headerReceiving = xssfRowHeader.createCell(3);
+        headerReceiving.setCellValue("收件信息");
+        headerReceiving.setCellStyle(xssfCellStyleHeader);
+        XSSFCell headerCourseName = xssfRowHeader.createCell(4);
         headerCourseName.setCellValue("金额类别");
         headerCourseName.setCellStyle(xssfCellStyleHeader);
-        XSSFCell headerBookId = xssfRowHeader.createCell(4);
+        XSSFCell headerBookId = xssfRowHeader.createCell(5);
         headerBookId.setCellValue("收支金额");
         headerBookId.setCellStyle(xssfCellStyleHeader);
-        XSSFCell headerBookName = xssfRowHeader.createCell(5);
+        XSSFCell headerBookName = xssfRowHeader.createCell(6);
         headerBookName.setCellValue("收支类别");
         headerBookName.setCellStyle(xssfCellStyleHeader);
-        XSSFCell headerCreateTime = xssfRowHeader.createCell(6);
+        XSSFCell headerCreateTime = xssfRowHeader.createCell(7);
         headerCreateTime.setCellValue("收支时间");
         headerCreateTime.setCellStyle(xssfCellStyleHeader);
 
@@ -198,18 +203,25 @@ public class BillService {
             bodyUserNickname.setCellValue(user.get("user_id").toString());
             bodyUserNickname.setCellStyle(xssfCellStyleBody);
             XSSFCell bodyCourseId = xssfRowBody.createCell(2);
-            bodyCourseId.setCellValue(user.get("user_nickname").toString());
+            bodyCourseId.setCellValue(StringUtils.isBlank(user.get("user_nickname").toString()) ? "未知" : user.get("user_nickname").toString());
             bodyCourseId.setCellStyle(xssfCellStyleBody);
-            XSSFCell bodyCourseName = xssfRowBody.createCell(3);
+            XSSFCell bodyReceiving = xssfRowBody.createCell(3);
+            if(!StringUtils.isBlank(user.get("user_receiving_contact").toString()) && !StringUtils.isBlank(user.get("user_receiving_phone").toString()) && !StringUtils.isBlank(user.get("user_receiving_region").toString()) && !StringUtils.isBlank(user.get("user_receiving_street").toString())){
+                bodyReceiving.setCellValue(user.get("user_receiving_contact").toString() + " " + user.get("user_receiving_phone").toString() + " " + user.get("user_receiving_region").toString() +" " + user.get("user_receiving_street").toString());
+            }else{
+                bodyReceiving.setCellValue("未知");
+            }
+            bodyReceiving.setCellStyle(xssfCellStyleBody);
+            XSSFCell bodyCourseName = xssfRowBody.createCell(4);
             bodyCourseName.setCellValue(bill.get("bill_fee_type").toString());
             bodyCourseName.setCellStyle(xssfCellStyleBody);
-            XSSFCell bodyBookId = xssfRowBody.createCell(4);
+            XSSFCell bodyBookId = xssfRowBody.createCell(5);
             bodyBookId.setCellValue(bill.get("bill_fee").toString());
             bodyBookId.setCellStyle(xssfCellStyleBody);
-            XSSFCell bodyBookName = xssfRowBody.createCell(5);
+            XSSFCell bodyBookName = xssfRowBody.createCell(6);
             bodyBookName.setCellValue(bill.get("bill_bill_type").toString());
             bodyBookName.setCellStyle(xssfCellStyleBody);
-            XSSFCell bodyCreateTime = xssfRowBody.createCell(6);
+            XSSFCell bodyCreateTime = xssfRowBody.createCell(7);
             bodyCreateTime.setCellValue(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(bill.get("bill_create_time")));
             bodyCreateTime.setCellStyle(xssfCellStyleBody);
 

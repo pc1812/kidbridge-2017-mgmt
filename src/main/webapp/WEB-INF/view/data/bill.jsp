@@ -58,6 +58,7 @@
                                     <th>明细编号</th>
                                     <th>用户编号</th>
                                     <th>用户昵称</th>
+                                    <th>收件信息</th>
                                     <th>余额类别</th>
                                     <th>收支金额</th>
                                     <th>收支类别</th>
@@ -71,7 +72,17 @@
                                             <tr>
                                                 <td>${detail.bill_id }</td>
                                                 <td>${detail.user.user_id }</td>
-                                                <td>${detail.user.user_nickname }</td>
+                                                <td>${empty detail.user.user_nickname ? "未知" : detail.user.user_nickname }</td>
+                                                <td>
+                                                    <c:choose>
+                                                        <c:when test="${not empty detail.user.user_receiving_contact and not empty detail.user.user_receiving_phone and not empty detail.user.user_receiving_region and not empty detail.user.user_receiving_street }">
+                                                            ${detail.user.user_receiving_contact } ${detail.user.user_receiving_phone } ${detail.user.user_receiving_region } ${detail.user.user_receiving_street }
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            未知
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
                                                 <td>${detail.bill_fee_type }</td>
                                                 <td>${detail.bill_fee }</td>
                                                 <td>${detail.bill_bill_type }</td>
@@ -83,7 +94,7 @@
                                     </c:when>
                                     <c:otherwise>
                                         <tr>
-                                            <td colspan="7">暂无数据 ~</td>
+                                            <td colspan="8">暂无数据 ~</td>
                                         </tr>
                                     </c:otherwise>
                                 </c:choose>
