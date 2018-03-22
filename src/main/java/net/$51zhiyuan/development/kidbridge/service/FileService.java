@@ -17,6 +17,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -96,8 +97,9 @@ public class FileService {
      * @throws IOException
      */
     public Book handle(byte[] bytes) throws IOException {
+
         // 在本地构建一个临时路径，用于解压资源
-        File decompressionPath = new File(String.format("%s\\%s\\%s",this.tempPath, "kidbridge",UUID.randomUUID().toString().replace("-","")));
+        File decompressionPath = new File(String.format("%s"+File.separator+"%s"+File.separator+"%s",this.tempPath, "kidbridge",UUID.randomUUID().toString().replace("-","")));
         if(!decompressionPath.exists()){
             decompressionPath.mkdirs();
         }
@@ -216,7 +218,10 @@ public class FileService {
         book.setIcon(icon);
         book.setAudio(completeAudio);
         book.setBookSegmentList(segmentList);
-        decompressionPath.deleteOnExit();
+        xwpfWordExtractor.close();
+        xwpfDocument.close();
+        inputStream.close();
+        FileUtils.deleteDirectory(decompressionPath);
         return book;
     }
 
