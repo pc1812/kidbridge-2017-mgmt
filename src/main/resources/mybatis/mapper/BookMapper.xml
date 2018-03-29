@@ -28,8 +28,10 @@
             COUNT(*)
         FROM
             `t_course_detail` AS `courseDetail`
+		LEFT JOIN `t_course` AS `course` ON `course`.`id` = `courseDetail`.`course_id`
         WHERE
             `courseDetail`.`del_flag` = FALSE
+            AND `course`.`del_flag` = FALSE
             AND `courseDetail`.`book_id` = #{_parameter}
     </select>
 
