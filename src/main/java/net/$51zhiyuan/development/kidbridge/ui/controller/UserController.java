@@ -1,8 +1,11 @@
 package net.$51zhiyuan.development.kidbridge.ui.controller;
 
 import net.$51zhiyuan.development.kidbridge.exception.KidbridgeSimpleException;
+import net.$51zhiyuan.development.kidbridge.module.Configuration;
 import net.$51zhiyuan.development.kidbridge.service.UserService;
 import net.$51zhiyuan.development.kidbridge.ui.model.Admin;
+import net.$51zhiyuan.development.kidbridge.ui.model.User;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +58,39 @@ public class UserController {
         try{
             Map map = this.userService.search((Integer) param.get("page"), param.get("keyword") == null ? "" : param.get("keyword").toString());
             data = map;
+            success = true;
+        }catch (KidbridgeSimpleException k){
+            message = k.getMessage();
+            this.logger.debug(k.getMessage(),k);
+        }catch (Exception e){
+            message = "系统繁忙，请稍后再试 ~";
+            this.logger.error(e.getMessage(),e);
+        }
+        response.put("success",success);
+        response.put("message",message);
+        response.put("data",data);
+        return response;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
+    Object register(@RequestBody Map param){
+        boolean success = false;
+        String message = "";
+        Object data = new ArrayList();
+        Map response = new HashMap();
+        try{
+            this.userService.add(new User(){
+                @Override
+                public String getPhone() {
+                    return (String) param.get("phone");
+                }
+
+                @Override
+                public String getPassword() {
+                    return DigestUtils.md5Hex(String.format("%s:%s:%s", param.get("phone"), param.get("password"), Configuration.SYSTEM_SIGN_SALT));
+                }
+            });
             success = true;
         }catch (KidbridgeSimpleException k){
             message = k.getMessage();

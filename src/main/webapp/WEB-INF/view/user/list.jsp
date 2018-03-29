@@ -119,6 +119,9 @@
                                 </tbody>
                             </table>
                             <div style="height: 35px;">
+                                <div style="float: left">
+                                    <button type="button" class="btn btn-primary pull-left" data-toggle="modal" data-backdrop="static" data-target="#user-add"><i class="fa fa-plus"></i></button>
+                                </div>
                                 <div style="float: right; display: ${page.numberList.size() == 0 ? "none" : "block" }">
                                     <ul class="pagination">
                                         <c:choose>
@@ -178,6 +181,34 @@
                                             </c:otherwise>
                                         </c:choose>
                                     </ul>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="user-add" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                            <h4 class="modal-title">用户添加</h4>
+                                        </div>
+                                        <div class="modal-body" style="padding-bottom: 20px;">
+                                            <div class="input-group" style="margin-bottom: 15px;">
+                                                <span class="input-group-addon">手机号码</span>
+                                                <select class="form-control" name="user-add-region">
+                                                    <option value="+1">+1</option>
+                                                    <option value="+86">+86</option>
+                                                </select>
+                                                <input type="text" class="form-control" name="user-add-phone" placeholder="请输入手机号码">
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="input-group-addon">登录密码</span>
+                                                <input type="text" class="form-control" name="user-add-password" placeholder="请输入登录密码">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal" style="margin-bottom: 0;">关闭</button>
+                                            <button type="button" class="btn btn-primary user-add-save">保存</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="modal fade" id="balance-edit" tabindex="-1" role="dialog">
@@ -269,6 +300,32 @@
 <script src="/resources/js/plugins/sweetalert/sweetalert.min.js"></script>
 <script src="/resources/js/service/base.js"></script>
 <script>
+    $(".user-add-save").on("click",function () {
+        var region = $("select[name='user-add-region']").val();
+        var phone = $("input[name='user-add-phone']").val();
+        var password = $("input[name='user-add-password']").val();
+        $.ajax({
+            url: "/user/register",
+            type:"POST",
+            data:JSON.stringify({"phone": (region+phone), "password": password}),
+            contentType: "application/json",
+            dataType: "json",
+            success: function(resp){
+                if(!resp.success){
+                    swal({
+                        title: "错误提示",
+                        text: resp.message,
+                        type: "error",
+                        cancelButtonText: "关闭",
+                        showCancelButton: true,
+                        showConfirmButton: false
+                    });
+                    return;
+                }
+                window.location.reload();
+            }
+        });
+    });
     $('#bonus-edit').on('show.bs.modal', function (event) {
         var t = $(event.relatedTarget);
         var id = t.data("id");

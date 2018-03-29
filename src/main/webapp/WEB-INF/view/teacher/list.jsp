@@ -61,15 +61,11 @@
                                     </c:otherwise>
                                 </c:choose>
                                 </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="5">
-                                            <button type="button" class="btn btn-primary pull-left" data-toggle="modal" data-backdrop="static" data-target="#user-search"><i class="fa fa-plus"></i></button>
-                                        </td>
-                                    </tr>
-                                </tfoot>
                             </table>
                             <div style="height: 35px;">
+                                <div style="float: left">
+                                    <button type="button" class="btn btn-primary pull-left" data-toggle="modal" data-backdrop="static" data-target="#user-search"><i class="fa fa-plus"></i></button>
+                                </div>
                                 <div style="float: right; display: ${page.numberList.size() == 0 ? "none" : "block" }">
                                     <ul class="pagination">
                                         <c:choose>

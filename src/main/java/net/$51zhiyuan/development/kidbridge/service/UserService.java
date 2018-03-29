@@ -40,6 +40,10 @@ public class UserService {
     @Autowired
     private SqlSessionTemplate sqlSessionTemplate;
 
+    public void add(User user){
+        this.sqlSessionTemplate.insert(this.namespace + "add",user);
+    }
+
     public Map list(Map param){
         int show = 15;
         int currPage = (param.get("page") == null || StringUtils.isBlank(param.get("page").toString())) ? 1 : Integer.parseInt(param.get("page").toString());
