@@ -30,6 +30,7 @@ public class Course implements Serializable {
     private List<User> userList;
     private CourseHot courseHot;
     private Integer bookCount;
+    private Integer sort;
     private Boolean delFlag;
     private Date createTime;
     private Date updateTime;
@@ -218,6 +219,14 @@ public class Course implements Serializable {
         this.userList = userList;
     }
 
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
     @Override
     public String toString() {
         return "Course{" +
@@ -241,6 +250,7 @@ public class Course implements Serializable {
                 ", userList=" + userList +
                 ", courseHot=" + courseHot +
                 ", bookCount=" + bookCount +
+                ", sort=" + sort +
                 ", delFlag=" + delFlag +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +

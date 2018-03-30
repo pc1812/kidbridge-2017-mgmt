@@ -124,6 +124,14 @@
                                             </div>
                                         </div>
                                     </div>--%>
+                                    <div class="course-sort">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading">排　　序</div>
+                                            <div class="panel-body">
+                                                <input value="${empty course.sort ? "0" : course.sort }" class="book-sort form-control" name="course-sort" type="text" placeholder="数值越大排序越靠前" />
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="course-teacher">
                                         <div class="panel panel-default">
                                             <div class="panel-heading">所属教师</div>
@@ -1042,6 +1050,7 @@
         });
         course.price = $("[name='course-price']").val();
         course.name= $("[name='course-name']").val();
+        course.sort= $("[name='course-sort']").val();
         course.teacher = {};
         course.teacher.id = $("[name='course-teacher']").data("id");
         course.outline = $("[name='course-outline']").val();

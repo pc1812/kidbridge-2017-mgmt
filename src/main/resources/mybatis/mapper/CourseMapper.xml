@@ -14,6 +14,7 @@
         <result property="price" column="course_price" />
         <result property="tag" column="course_tag" typeHandler="net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler" />
         <result property="bookCount" column="book_count" />
+        <result property="sort" column="course_sort" />
         <association property="teacher" javaType="Teacher">
             <id property="id" column="teacher_id" />
             <result property="realname" column="teacher_realname" />
@@ -34,6 +35,7 @@
             `course`.`name` AS `course_name`,
             `course`.`fit` AS `course_fit`,
             `course`.`limit` AS `course_limit`,
+            `course`.`sort` AS `course_sort`,
             (SELECT COUNT(*) FROM `t_user_course` AS `userCourse` WHERE `userCourse`.`del_flag` = FALSE AND `userCourse`.`course_id` = `course`.`id`) AS `course_enter`,
             (SELECT SUM(`cycle`) FROM `t_course_detail` AS `courseDetail` WHERE `courseDetail`.del_flag = FALSE AND `courseDetail`.`course_id` = `course`.`id`) AS `course_cycle`,
             (IF((NOW() >= `course`.`start_time`),IF((DATE_ADD(`course`.`start_time`,INTERVAL (SELECT SUM(`cycle`) FROM `t_course_detail` AS `courseDetail` WHERE `courseDetail`.del_flag = FALSE AND `courseDetail`.`course_id` = `course`.`id`) DAY) >= NOW()),1,2),0)) AS `course_status`,
@@ -60,6 +62,7 @@
                 AND (`course`.`id` LIKE CONCAT('%',#{keyword},'%') OR `course`.`name` LIKE CONCAT('%',#{keyword},'%'))
             </if>
         ORDER BY
+            `course`.`sort` DESC,
             `course`.`create_time` DESC
     </select>
 
@@ -76,6 +79,7 @@
         <result property="richText" column="course_rich_text" />
         <result property="status" column="course_status" />
         <result property="startTime" column="course_start_time" />
+        <result property="sort" column="course_sort" />
         <association property="copyright" javaType="CourseCopyright">
             <association property="user" javaType="User">
                 <id property="id" column="courseCopyright_user_id" />
@@ -108,6 +112,7 @@
             `course`.`icon` AS `course_icon`,
             `course`.`tag` AS `course_tag`,
             `course`.`fit` AS `course_fit`,
+            `course`.`sort` AS `course_sort`,
             `course`.`rich_text` AS `course_rich_text`,
             `course`.`price` AS `course_price`,
             `course`.`start_time` AS `course_start_time`,
@@ -155,6 +160,7 @@
             `limit`,
             `start_time`,
             `price`,
+            `sort`,
             `tag`,
             `rich_text`
         )VALUES(
@@ -165,6 +171,7 @@
             #{limit},
             #{startTime},
             #{price},
+            #{sort},
             #{tag,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler},
             #{richtext}
         )
@@ -177,6 +184,7 @@
             `name` = #{name},
             `icon` = #{icon,typeHandler=net.$51zhiyuan.development.kidbridge.module.typehandler.JsonTypeHandler},
             `fit` = #{fit},
+            `sort` = #{sort},
             `limit` = #{limit},
             `start_time` = #{startTime},
             `price` = #{price},
