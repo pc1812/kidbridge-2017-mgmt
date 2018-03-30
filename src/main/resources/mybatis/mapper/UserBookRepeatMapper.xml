@@ -41,7 +41,7 @@
                 AND DATE_FORMAT(`userBookRepeat`.`update_time`,'%Y-%m-%d') &lt;= #{endDate}
             </if>
         ORDER BY
-            `userBookRepeat`.`update_time` ASC
+            `userBookRepeat`.`update_time` DESC
     </select>
 
 </mapper>

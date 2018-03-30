@@ -234,7 +234,7 @@
                                             <div class="panel panel-default">
                                                 <div class="panel-heading">附加余额</div>
                                                 <div class="panel-body">
-                                                    <input name="append" class="form-control" type="text" placeholder="请输入整数或小数" />
+                                                    <input name="append" class="form-control" type="text" placeholder="请输入整数" />
                                                 </div>
                                             </div>
                                         </div>

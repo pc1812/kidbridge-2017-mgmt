@@ -137,7 +137,7 @@
                 AND DATE_FORMAT(`bill`.`create_time`,'%Y-%m-%d') &lt;= #{endDate}
             </if>
         ORDER BY
-            `bill`.`create_time` ASC
+            `bill`.`create_time` DESC
     </select>
 
 </mapper>

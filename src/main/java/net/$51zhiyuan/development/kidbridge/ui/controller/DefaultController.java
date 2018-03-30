@@ -3,6 +3,7 @@ package net.$51zhiyuan.development.kidbridge.ui.controller;
 import net.$51zhiyuan.development.kidbridge.exception.KidbridgeSimpleException;
 import net.$51zhiyuan.development.kidbridge.service.AdminService;
 import net.$51zhiyuan.development.kidbridge.ui.model.Admin;
+import net.$51zhiyuan.development.kidbridge.ui.model.Message;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,12 @@ public class DefaultController {
     Object login(){
         ModelAndView view = new ModelAndView();
         return view;
+    }
+
+    @ResponseBody
+    @RequestMapping("/version")
+    Object version(){
+        return new Message("1.2.0");
     }
 
     @ResponseBody

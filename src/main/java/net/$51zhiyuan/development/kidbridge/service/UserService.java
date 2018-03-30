@@ -186,6 +186,9 @@ public class UserService {
             throw new KidbridgeSimpleException("未知的附加信息 ~");
         }
         String append = param.get("append").toString();
+        if(append.indexOf('.') > -1){
+            throw new KidbridgeSimpleException("请输入整数附加信息 ~");
+        }
         try {
             Double.parseDouble(append);
         }catch (Exception e){

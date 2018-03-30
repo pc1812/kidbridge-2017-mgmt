@@ -35,6 +35,18 @@
             AND `courseDetail`.`book_id` = #{_parameter}
     </select>
 
+    <select id="existBookInBookshelf" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        SELECT
+          COUNT(*)
+        FROM
+          `t_bookshelf_detail` AS `bookshelfDetail`
+        LEFT JOIN `t_bookshelf` AS `bookshelf` ON `bookshelf`.`id` = `bookshelfDetail`.`bookshelf_id`
+        WHERE
+            `bookshelfDetail`.`del_flag` = FALSE
+            AND `bookshelf`.`del_flag` = FALSE
+            AND `bookshelfDetail`.`book_id` = #{_parameter}
+    </select>
+
     <select id="get" resultMap="getResultMap">
         SELECT
             `book`.`id` AS `book_id`,

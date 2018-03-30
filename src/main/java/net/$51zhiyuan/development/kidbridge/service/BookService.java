@@ -186,6 +186,15 @@ public class BookService {
         return ((int)this.sqlSessionTemplate.selectOne(this.namespace + "existBookInCourse",bookId) > 0);
     }
 
+    /**
+     * 判断某个绘本是否被其它书单引用使用
+     * @param bookId
+     * @return
+     */
+    public Boolean existBookInBookshelf(Integer bookId){
+        return ((int)this.sqlSessionTemplate.selectOne(this.namespace + "existBookInBookshelf",bookId) > 0);
+    }
+
     public void updatePrice(List<Integer> ids, String price){
         if(ids == null || ids.size() == 0){
             throw new KidbridgeSimpleException("未知的绘本信息 ~");
@@ -273,6 +282,9 @@ public class BookService {
         if(this.existBookInCourse(bookId)){
             // 如果该绘本已被课程使用，则无法删除
             throw new KidbridgeSimpleException("该绘本已被某些课程引用，请先删除相关课程");
+        }
+        if(this.existBookInBookshelf(bookId)){
+            throw new KidbridgeSimpleException("该绘本已被某些书单引用，请先删除相关书单");
         }
         this.sqlSessionTemplate.update(this.namespace + "del",bookId);
     }
